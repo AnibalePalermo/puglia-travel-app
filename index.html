@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Puglia Trip</title>
+<meta name="theme-color" content="#157a8a" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Puglia 2026" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<style>
+:root{--bg:#f5f7f8;--card:#fff;--ink:#19323c;--muted:#667780;--accent:#157a8a;--accent2:#e7f3f5;--line:#dfe7ea;--warn:#fff4cf;--danger:#b5473c;--ok:#eaf7ee}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{max-width:620px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:84px}.top{padding:18px;background:linear-gradient(160deg,#0f7182,#2294a5);color:#fff;position:sticky;top:0;z-index:20}.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}.top h1{margin:0;font-size:24px}.top p{margin:4px 0 0;opacity:.9}.mode{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:999px;padding:8px 10px;font-weight:800;cursor:pointer}.content{padding:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 2px 7px rgba(20,55,65,.05)}
+.notice{background:var(--warn);border-color:#ead98c}.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}.notice .label{color:#7b6522}.big{font-size:19px;font-weight:750;margin:5px 0}.muted{color:var(--muted);font-size:14px}.row{display:flex;gap:10px;align-items:center;justify-content:space-between}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--accent2);color:var(--accent);font-size:12px;font-weight:700}.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:0;background:var(--accent);color:white;border-radius:10px;padding:10px 12px;font-weight:700;font-size:14px;cursor:pointer}.btn.secondary{background:#edf2f3;color:var(--ink)}.btn.danger{background:var(--danger)}.btn.small{padding:8px 10px;font-size:13px}.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.schedule{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.timebox{background:#f3f7f8;border-radius:12px;padding:10px}.timebox b{display:block;font-size:17px;margin-top:2px}.hotel{border-left:4px solid var(--accent)}
+.day{cursor:pointer}.day .details{display:none;padding-top:12px;border-top:1px solid var(--line);margin-top:12px}.day.open .details{display:block}.day-head{display:flex;justify-content:space-between;gap:12px}.day-title{font-weight:800;font-size:17px}.distance{font-size:13px;color:var(--muted);margin-top:4px}.chev{font-size:21px;color:var(--accent)}
+.list{padding-left:20px;margin:9px 0}.list li{margin:7px 0}.section-title{font-size:20px;font-weight:800;margin:5px 0 12px}.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(620px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);z-index:25}.nav{padding:10px 4px 8px;text-align:center;font-size:10px;color:var(--muted);cursor:pointer;position:relative}.alert-badge{position:absolute;top:5px;left:calc(50% + 8px);min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#d93025;color:#fff;font-size:11px;font-weight:900;line-height:18px;text-align:center;box-shadow:0 0 0 2px #fff}.home-alert-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#d93025;color:#fff;font-size:11px;font-weight:900;margin-left:7px;vertical-align:middle}.nav span{display:block;font-size:19px;margin-bottom:2px}.nav.active{color:var(--accent);font-weight:800}.page{display:none}.page.active{display:block}.person{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.person:last-child{border-bottom:0}.whatsapp{background:#eef9f0}.empty{padding:25px;text-align:center;color:var(--muted)}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);font:inherit;margin-top:5px;background:#fff;color:var(--ink)}textarea{min-height:92px;resize:vertical}.tiny{font-size:12px;color:var(--muted)}.field{margin-bottom:11px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.admin-card{border-left:4px solid #556f77}.success{background:var(--ok);border-color:#cfe7d4}.hidden{display:none!important}.editday{padding:12px 0;border-bottom:1px solid var(--line)}.editday:last-child{border-bottom:0}.admin-badge{background:#293e46;color:#fff;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;padding:8px 10px;border-radius:999px;font-weight:700;cursor:pointer}.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Mobile-app polish */
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent}.app{box-shadow:0 0 0 1px rgba(20,55,65,.03)}
+.top{padding:calc(14px + env(safe-area-inset-top)) 16px 14px}.top h1{font-size:22px;line-height:1.15}.top p{font-size:13px}.mode{min-height:42px;padding:9px 12px;touch-action:manipulation}
+.content{padding:12px 12px 18px}.card{border-radius:18px;padding:14px;margin-bottom:10px}.big{font-size:18px}.section-title{font-size:19px;margin:4px 2px 11px}
+.btn{min-height:44px;border-radius:12px;padding:11px 14px;touch-action:manipulation}.btn.small{min-height:38px}.day{touch-action:manipulation}.day-head{align-items:center}.day-title{font-size:16px}.chev{font-size:22px}.timebox{padding:11px}.timebox b{font-size:16px}
+.bottom{padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 18px rgba(20,55,65,.07)}.nav{min-height:60px;padding:8px 2px 7px;font-size:10px;font-weight:650;touch-action:manipulation}.nav span{font-size:21px;line-height:1.05;margin-bottom:3px}.nav.active:after{content:'';position:absolute;left:28%;right:28%;bottom:3px;height:3px;border-radius:999px;background:var(--accent)}
+input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:11px}.tabs{margin:0 -2px 12px;padding:0 2px 3px}.tab{min-height:42px;padding:9px 12px;touch-action:manipulation}.person{min-height:56px}.schedule{gap:8px}.notice{border-width:1px}
+@media(max-width:430px){.app{padding-bottom:92px}.grid2{grid-template-columns:1fr}.top{padding-left:14px;padding-right:14px}.top h1{font-size:20px}.top p{font-size:12px}.mode{font-size:11px;padding:8px 9px;min-height:40px}.content{padding-left:10px;padding-right:10px}.card{padding:13px;border-radius:16px}.schedule{grid-template-columns:1fr 1fr}.bottom{grid-template-columns:repeat(5,1fr)}.nav{font-size:9px;min-height:62px}.nav span{font-size:20px}.btnrow .btn{flex:1 1 auto}.row{gap:8px}.pill{font-size:11px}.section-title{font-size:18px}}
+@media(max-width:350px){.toprow{align-items:flex-start}.top h1{font-size:18px}.top p{font-size:11px}.mode{font-size:10px}.schedule{grid-template-columns:1fr}.nav{font-size:8px}.nav span{font-size:18px}}
+.install-card{background:#eef7f8;border-color:#cfe5e8}.install-card .btn{width:100%;margin-top:10px}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="toprow"><div><h1>Puglia 2026</h1><p>September 7–27 · Group trip</p></div><button id="modeBtn" class="mode">Organizer mode</button></div></header>
+
+<main>
+<section id="home" class="page active content"></section>
+<section id="itinerary" class="page content"><div class="section-title">Day-by-day itinerary</div><div id="days"></div></section>
+<section id="messages" class="page content"><div class="section-title">Notifications</div><div id="messageList"></div></section>
+<section id="travellers" class="page content"><div class="section-title">Travellers</div><div id="travellerSummary"></div><div class="card" id="travellerList"></div></section>
+<section id="organizer" class="page content"><div class="section-title">Organizer dashboard</div><div id="organizerContent"></div></section>
+</main>
+
+<nav class="bottom" id="bottomNav">
+  <div class="nav active" data-page="home"><span>⌂</span>Home</div>
+  <div class="nav" data-page="itinerary"><span>≡</span>Itinerary</div>
+  <div class="nav" data-page="messages" id="alertsNav"><span>◉</span>Alerts</div>
+  <div class="nav" data-page="travellers"><span>♙</span>Travellers</div>
+  <div class="nav organizerNav hidden" data-page="organizer"><span>⚙</span>Organizer</div>
+</nav>
+</div>
+<script>
+const defaultState={
+  hotels:[
+    {id:'south',name:'Messapia Hotel & Resort',subtitle:'Southern Puglia base',address:'Santa Maria di Leuca, Italy'},
+    {id:'north',name:'Cristal Palace Hotel',subtitle:'Northern Puglia base',address:'Andria, Italy'}
+  ],
+  whatsapp:'',
+  notifications:[
+    {date:'Sept 9',title:'Lecce departure',body:'Tomorrow morning departure is 8:30 AM. Please meet in the lobby by 8:20.'},
+    {date:'Sept 8',title:'Welcome to Puglia',body:"Hotel check-in is complete. Tomorrow's destination is Brindisi."}
+  ],
+  travellers:Array.from({length:50},(_,i)=>({name:['Anna R.','Carlo M.','Diane L.','Enzo D.','Franco P.','Gina T.','Luc B.','Maria C.'][i]||`Traveller ${i+1}`,email:i<8?(i%3===0?'':'traveller@example.com'):''})),
+  itinerary:[
+    ['Sept 9','Brindisi','south','124 km','1 hr 30 min','8:30 AM','5:30 PM',['Roman Columns','Lungomare Regina Margherita','Castello Alfonsino','Santa Teresa Church & Cloister','Old Port Area']],
+    ['Sept 10','Lecce','south','80 km','1 hr 15 min','8:30 AM','5:30 PM',['Basilica di Santa Croce','Piazza del Duomo','Roman Amphitheatre','Porta Napoli','Chiesa di San Matteo']],
+    ['Sept 11','Porto Cesareo','south','74 km','1 hr','8:30 AM','5:30 PM',['Isola dei Conigli','Torre Cesarea','Marine Protected Area','Porto Cesareo Fish Market','Punta Prosciutto']],
+    ['Sept 12','Galatina','south','73 km','1 hr','8:30 AM','5:30 PM',['Basilica di Santa Caterina d’Alessandria','Historic Center','Chiesa Madre','Tarantismo Museum']],
+    ['Sept 13','Maglie','south','53 km','50 min','9:00 AM','5:00 PM',['Piazza Aldo Moro','Palazzo Baronale Capece','Archaeological Museum of Maglie','Dolmen Li Scusi']],
+    ['Sept 14','Rest Day','south','','','—','—',[]],
+    ['Sept 15','Otranto','south','47 km','1 hr','8:30 AM','5:30 PM',['Otranto Cathedral','Castello Aragonese','Old Town Streets','Lungomare Promenade','Cava di Bauxite']],
+    ['Sept 16','Open / flexible day','south','47 km','1 hr','9:00 AM','5:00 PM',[]],
+    ['Sept 17','Gallipoli','south','46 km','1 hr','8:30 AM','5:30 PM',['Centro Storico','Cathedral of Sant’Agata','Gallipoli Fish Market','City Walls','Underground Olive Oil Mills']],
+    ['Sept 18','Transfer north','south','294 km','4 hr','8:30 AM','3:30 PM',['Hotel transfer day']],
+    ['Sept 19','Locorotondo','north','125 km','1 hr 30 min','8:30 AM','5:30 PM',['Historic Center','Villa Comunale viewpoint','Church of San Giorgio','Via Nardelli']],
+    ['Sept 20','Alberobello','north','125 km','1 hr 30 min','8:30 AM','5:30 PM',['Trullo Sovrano','Rione Monti','Aia Piccola','Belvedere Santa Lucia']],
+    ['Sept 21','Monopoli & Polignano a Mare','north','100 km','1 hr 15 min','8:30 AM','6:00 PM',['Monopoli Porto Antico','Castello Carlo V','Lama Monachile Beach','Polignano Old Town terraces']],
+    ['Sept 22','Matera','north','90 km','1 hr 15 min','8:00 AM','6:00 PM',['Sassi di Matera','Rock Churches','Casa Grotta di Vico Solitario','Belvedere di Murgia Timone','Palombaro Lungo']],
+    ['Sept 23','Bari','north','60 km','1 hr','8:30 AM','5:30 PM',['Basilica di San Nicola','Bari Vecchia','Castello Normanno-Svevo','Lungomare Nazario Sauro','Strada delle Orecchiette']],
+    ['Sept 24','Rest Day','north','','','—','—',[]],
+    ['Sept 25','Altamura','north','60 km','1 hr','8:30 AM','5:30 PM',['Altamura Cathedral','Historic Center','Claustri courtyards','Altamura Man Museum']],
+    ['Sept 26','Barletta & Trani','north','14 km','20 min','8:30 AM','5:30 PM',['Colossus of Barletta','Castello Svevo di Barletta','Trani Cathedral','Trani Harbor','Castello Svevo di Trani']],
+    ['Sept 27','Departure for Naples','north','300 km','3 hr','7:30 AM','—',['Travel to Naples for flight home']]
+  ]
+};
+let state=JSON.parse(localStorage.getItem('pugliaTripState')||'null')||structuredClone(defaultState);
+let organizerMode=false;
+const save=()=>localStorage.setItem('pugliaTripState',JSON.stringify(state));
+const alertKey=n=>n?`${n.date||''}|${n.title||''}|${n.body||''}`:'';
+if(localStorage.getItem('pugliaLastReadAlertKey')===null){localStorage.setItem('pugliaLastReadAlertKey',alertKey(state.notifications[0]));}
+function unreadAlertCount(){
+ const last=localStorage.getItem('pugliaLastReadAlertKey')||'';
+ if(!state.notifications.length)return 0;
+ const idx=state.notifications.findIndex(n=>alertKey(n)===last);
+ return idx<0?state.notifications.length:idx;
+}
+function markAlertsRead(){localStorage.setItem('pugliaLastReadAlertKey',alertKey(state.notifications[0]));updateAlertBadge();}
+function updateAlertBadge(){
+ const nav=document.getElementById('alertsNav'); if(!nav)return;
+ nav.querySelectorAll('.alert-badge').forEach(x=>x.remove());
+ const count=unreadAlertCount();
+ if(count){const b=document.createElement('span');b.className='alert-badge';b.textContent=count>9?'9+':count;nav.appendChild(b);}
+}
+
+const hotelById=id=>state.hotels.find(h=>h.id===id)||state.hotels[0];
+const esc=s=>(s??'').toString().replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
+const generatedRoute=(d,h)=>`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(h.address)}&destination=${encodeURIComponent(d[1]+' Italy')}`;
+const routeFor=(d,h)=>/^https?:\/\//i.test((d[8]||'').trim())?d[8].trim():generatedRoute(d,h);
+function renderAll(){renderHome();renderItinerary();renderMessages();renderTravellers();renderOrganizer();updateAlertBadge()}
+function itineraryDate(d){
+ const m=(d[0]||'').match(/([A-Za-z]+)\s+(\d{1,2})/); if(!m)return null;
+ const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sept:8,Sep:8,Oct:9,Nov:10,Dec:11};
+ const key=m[1].slice(0,4); const month=months[key]??months[m[1].slice(0,3)];
+ return month===undefined?null:new Date(2026,month,+m[2]);
+}
+function homeDayForToday(){
+ const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ const dated=state.itinerary.map((d,i)=>({d,i,date:itineraryDate(d)})).filter(x=>x.date).sort((a,b)=>a.date-b.date);
+ if(!dated.length)return {d:state.itinerary[0],label:'Next up'};
+ const first=dated[0],last=dated[dated.length-1];
+ const exact=dated.find(x=>x.date.getTime()===today.getTime());
+ if(exact)return {d:exact.d,i:exact.i,date:exact.date,label:`Today · ${exact.d[0]}`,today:true};
+ if(today<first.date)return {d:first.d,i:first.i,date:first.date,label:`Next up · ${first.d[0]}`,beforeTrip:true};
+ if(today>last.date)return {d:last.d,i:last.i,date:last.date,label:'Trip complete',complete:true};
+ const next=dated.find(x=>x.date>today);
+ return next?{d:next.d,i:next.i,date:next.date,label:`Next up · ${next.d[0]}`}:{d:last.d,i:last.i,date:last.date,label:'Trip complete',complete:true};
+}
+function secondaryHomeDay(pick){
+ if(pick.complete)return null;
+ const dated=state.itinerary.map((d,i)=>({d,i,date:itineraryDate(d)})).filter(x=>x.date).sort((a,b)=>a.date-b.date);
+ if(pick.today){
+   const tomorrow=new Date(pick.date); tomorrow.setDate(tomorrow.getDate()+1);
+   const exactTomorrow=dated.find(x=>x.date.getTime()===tomorrow.getTime());
+   return exactTomorrow?{...exactTomorrow,label:`Tomorrow · ${exactTomorrow.d[0]}`}:null;
+ }
+ if(pick.beforeTrip){
+   const following=dated.find(x=>x.date>pick.date);
+   return following?{...following,label:`Following day · ${following.d[0]}`}:null;
+ }
+ return null;
+}
+function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true}
+function installCard(){
+  if(isStandalone()) return '';
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(deferredInstallPrompt) return `<div class="card install-card"><div class="label">Install app</div><div class="big">Add Puglia 2026 to your phone</div><div class="muted">Install it for a full-screen app experience and quicker access.</div><button class="btn" id="installAppBtn">Install Puglia 2026</button></div>`;
+  if(ios) return `<div class="card install-card"><div class="label">Add to iPhone</div><div class="big">Install Puglia 2026</div><div class="muted">In Safari, tap Share, then choose <b>Add to Home Screen</b>.</div></div>`;
+  return '';
+}
+function renderHome(){
+ const pick=homeDayForToday(),d=pick.d,h=hotelById(d[2]),latest=state.notifications[0],secondary=secondaryHomeDay(pick);
+ const secondaryHtml=secondary?(()=>{const sd=secondary.d,sh=hotelById(sd[2]);return `<div class="card"><div class="label">${esc(secondary.label)}</div><div class="row"><div><div class="big">${esc(sd[1])}</div><div class="muted">${esc(sh.name)}</div></div><span class="pill">Coming up</span></div><div class="schedule"><div class="timebox"><span class="tiny">Morning departure</span><b>${esc(sd[5])}</b></div><div class="timebox"><span class="tiny">PM return</span><b>${esc(sd[6])}</b></div></div>${sd[3]||sd[8]?`<div class="btnrow"><a class="btn secondary" target="_blank" rel="noopener" href="${esc(routeFor(sd,sh))}">Quick route</a></div>`:''}</div>`})():'';
+ document.getElementById('home').innerHTML=installCard()+`
+ ${latest?`<div class="card notice"><div class="label">Latest organizer notification${unreadAlertCount()?`<span class="home-alert-badge">${unreadAlertCount()>9?'9+':unreadAlertCount()} new</span>`:''}</div><div class="big">${esc(latest.title)}</div><div class="muted">${esc(latest.body)}</div><div class="btnrow"><button class="btn secondary small" onclick="navigate('messages')">View alerts</button></div></div>`:''}
+ <div class="card hotel"><div class="label">${pick.complete?'Final hotel':'Hotel for this day'}</div><div class="big">${esc(h.name)}</div><div class="muted">${esc(h.subtitle)}</div></div>
+ <div class="card"><div class="label">${esc(pick.label)}</div><div class="big">${esc(d[1])}</div><div class="muted">${pick.complete?'Your Puglia itinerary has finished.':`${esc(d[3])}${d[4]?` · about ${esc(d[4])} from the hotel`:''}`}</div>
+ ${pick.complete?'':`<div class="schedule"><div class="timebox"><span class="tiny">Morning departure</span><b>${esc(d[5])}</b></div><div class="timebox"><span class="tiny">PM return</span><b>${esc(d[6])}</b></div></div>`}
+ ${!pick.complete&&(d[3]||d[8])?`<div class="btnrow"><a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Open route map</a></div>`:''}</div>
+ ${secondaryHtml}
+ <div class="card whatsapp"><div class="label">Group communication</div><div class="big">WhatsApp group</div><div class="muted">Use WhatsApp for general trip communication. Organizer alerts will still appear here in the app.</div><div class="btnrow">${state.whatsapp?`<a class="btn secondary" target="_blank" href="${esc(state.whatsapp)}">Open WhatsApp group</a>`:`<button class="btn secondary" onclick="alert('The organizer has not added the WhatsApp group link yet.')">WhatsApp info</button>`}</div></div>`;
+const installBtn=document.getElementById('installAppBtn');if(installBtn)installBtn.onclick=async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;renderHome()};
+}
+function renderItinerary(){const days=document.getElementById('days');days.innerHTML='';state.itinerary.forEach((d,i)=>{const h=hotelById(d[2]),div=document.createElement('div');div.className='card day';div.innerHTML=`<div class="day-head"><div><div class="label">${d[0]}</div><div class="day-title">${esc(d[1])}</div>${d[3]||d[4]?`<div class="distance">${esc(d[3])}${d[3]&&d[4]?' · ':''}${esc(d[4])}${(d[3]||d[4])?` from ${esc(h.name)}`:''}</div>`:''}</div><div class="chev">›</div></div><div class="details"><div class="schedule"><div class="timebox"><span class="tiny">Morning departure</span><b>${esc(d[5])}</b></div><div class="timebox"><span class="tiny">PM return</span><b>${esc(d[6])}</b></div></div>${Array.isArray(d[7])&&d[7].length?`<div class="label" style="margin-top:14px">Things to see</div><ul class="list">${d[7].map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}${d[3]||d[8]?`<a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Route from hotel</a>`:''}</div>`;div.addEventListener('click',e=>{if(e.target.tagName!=='A')div.classList.toggle('open')});days.appendChild(div)})}
+function renderMessages(){document.getElementById('messageList').innerHTML=state.notifications.length?state.notifications.map((n,i)=>`<div class="card ${i===0?'notice':''}"><div class="label">Organizer · ${esc(n.date)}</div><div class="big">${esc(n.title)}</div><div class="muted">${esc(n.body)}</div></div>`).join(''):`<div class="card empty">No organizer notifications yet.</div>`}
+function renderTravellers(){document.getElementById('travellerSummary').innerHTML=`<div class="card"><div class="row"><div><div class="big" style="margin:0">${state.travellers.length} travellers</div><div class="muted">Name and optional email only</div></div><span class="pill">Group</span></div></div>`;document.getElementById('travellerList').innerHTML=state.travellers.map(t=>`<div class="person"><div><b>${esc(t.name)}</b><div class="tiny">${t.email?esc(t.email):'email optional / not added'}</div></div></div>`).join('')}
+function renderOrganizer(){
+ const el=document.getElementById('organizerContent');
+ el.innerHTML=`<div class="tabs"><button class="tab active" data-admin="schedule">Daily schedule</button><button class="tab" data-admin="alerts">Alerts</button><button class="tab" data-admin="hotels">Hotels</button><button class="tab" data-admin="people">Travellers</button><button class="tab" data-admin="whatsapp">WhatsApp</button></div><div id="adminPanel"></div>`;
+ el.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{el.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');renderAdminPanel(t.dataset.admin)});renderAdminPanel('schedule')
+}
+function renderAdminPanel(type){const p=document.getElementById('adminPanel'); if(!p)return;
+ if(type==='schedule'){p.innerHTML=`<div class="card admin-card"><div class="label">Edit full itinerary</div><div class="muted">Edit any day below. Sights should be entered one per line. Leave the route link blank to have the app create a Google Maps route automatically from the selected hotel.</div>${state.itinerary.map((d,i)=>`<div class="editday"><div class="row"><div><b>${d[0]} · ${esc(d[1])}</b><div class="tiny">${esc(hotelById(d[2]).name)}</div></div><span class="admin-badge">Edit</span></div><div class="field"><label class="tiny">Destination</label><input data-day="${i}" data-field="1" value="${esc(d[1])}"></div><div class="field"><label class="tiny">Hotel base</label><select data-day="${i}" data-field="2">${state.hotels.map(h=>`<option value="${esc(h.id)}" ${h.id===d[2]?'selected':''}>${esc(h.name)}</option>`).join('')}</select></div><div class="grid2"><div class="field"><label class="tiny">Distance from hotel</label><input data-day="${i}" data-field="3" value="${esc(d[3])}" placeholder="e.g. 80 km"></div><div class="field"><label class="tiny">Travel time</label><input data-day="${i}" data-field="4" value="${esc(d[4])}" placeholder="e.g. 1 hr 15 min"></div></div><div class="grid2"><div class="field"><label class="tiny">Morning departure</label><input data-day="${i}" data-field="5" value="${esc(d[5])}"></div><div class="field"><label class="tiny">PM return</label><input data-day="${i}" data-field="6" value="${esc(d[6])}"></div></div><div class="field"><label class="tiny">Things to see — one per line</label><textarea data-day="${i}" data-field="7">${esc((d[7]||[]).join('\n'))}</textarea></div><div class="field"><label class="tiny">Route link (optional)</label><input data-day="${i}" data-field="8" value="${esc(d[8]||'')}" placeholder="https://www.google.com/maps/..."></div></div>`).join('')}<div class="btnrow"><button class="btn" id="saveSchedule">Save itinerary changes</button></div></div>`;document.getElementById('saveSchedule').onclick=()=>{p.querySelectorAll('[data-day]').forEach(inp=>{const d=state.itinerary[+inp.dataset.day],f=+inp.dataset.field;if(f===7)d[f]=inp.value.split(/\n/).map(x=>x.trim()).filter(Boolean);else if(f===8)d[f]=/^https?:\/\//i.test(inp.value.trim())?inp.value.trim():'';else if(f===5||f===6)d[f]=inp.value.trim()||'—';else d[f]=inp.value.trim();});save();renderAll();showOrganizer('schedule');alert('Itinerary changes saved.')};}
+ if(type==='alerts'){p.innerHTML=`<div class="card admin-card"><div class="label">Send organizer alert</div><div class="field"><label class="tiny">Date / label</label><input id="aDate" placeholder="e.g. Sept 10"></div><div class="field"><label class="tiny">Title</label><input id="aTitle" placeholder="e.g. Departure time changed"></div><div class="field"><label class="tiny">Message</label><textarea id="aBody" placeholder="Write the message travellers should see"></textarea></div><button class="btn" id="sendAlert">Publish alert</button></div><div class="card"><div class="label">Existing alerts</div>${state.notifications.map((n,i)=>`<div class="editday"><b>${esc(n.title)}</b><div class="tiny">${esc(n.date)}</div><div class="muted">${esc(n.body)}</div><div class="btnrow"><button class="btn danger small" data-delalert="${i}">Delete</button></div></div>`).join('')}</div>`;document.getElementById('sendAlert').onclick=()=>{const date=aDate.value.trim(),title=aTitle.value.trim(),body=aBody.value.trim();if(!title||!body){alert('Add a title and message.');return}state.notifications.unshift({date:date||'Organizer',title,body});save();renderAll();showOrganizer('alerts')};p.querySelectorAll('[data-delalert]').forEach(b=>b.onclick=()=>{state.notifications.splice(+b.dataset.delalert,1);save();renderAll();showOrganizer('alerts')})}
+ if(type==='hotels'){p.innerHTML=state.hotels.map((h,i)=>`<div class="card admin-card"><div class="label">${i===0?'Southern':'Northern'} hotel</div><div class="field"><label class="tiny">Hotel name</label><input data-hotel="${i}" data-hfield="name" value="${esc(h.name)}"></div><div class="field"><label class="tiny">Short description</label><input data-hotel="${i}" data-hfield="subtitle" value="${esc(h.subtitle)}"></div><div class="field"><label class="tiny">Map address</label><input data-hotel="${i}" data-hfield="address" value="${esc(h.address)}"></div></div>`).join('')+`<button class="btn" id="saveHotels">Save hotel details</button>`;document.getElementById('saveHotels').onclick=()=>{p.querySelectorAll('[data-hotel]').forEach(inp=>state.hotels[+inp.dataset.hotel][inp.dataset.hfield]=inp.value.trim());save();renderAll();showOrganizer('hotels');alert('Hotel details saved.')};}
+ if(type==='people'){p.innerHTML=`<div class="card admin-card"><div class="label">Add traveller</div><div class="grid2"><div class="field"><label class="tiny">Name</label><input id="pName" placeholder="Traveller name"></div><div class="field"><label class="tiny">Email (optional)</label><input id="pEmail" placeholder="name@example.com"></div></div><button class="btn" id="addPerson">Add traveller</button></div><div class="card"><div class="label">Current travellers · ${state.travellers.length}</div>${state.travellers.map((t,i)=>`<div class="person"><div><b>${esc(t.name)}</b><div class="tiny">${t.email?esc(t.email):'No email'}</div></div><button class="btn danger small" data-delperson="${i}">Remove</button></div>`).join('')}</div>`;document.getElementById('addPerson').onclick=()=>{const name=pName.value.trim(),email=pEmail.value.trim();if(!name){alert('Add a traveller name.');return}state.travellers.push({name,email});save();renderAll();showOrganizer('people')};p.querySelectorAll('[data-delperson]').forEach(b=>b.onclick=()=>{state.travellers.splice(+b.dataset.delperson,1);save();renderAll();showOrganizer('people')})}
+ if(type==='whatsapp'){p.innerHTML=`<div class="card admin-card"><div class="label">WhatsApp group</div><div class="muted">Paste the invitation link for the group. Travellers will then see an Open WhatsApp Group button on Home.</div><div class="field"><label class="tiny">WhatsApp invitation link</label><input id="waLink" value="${esc(state.whatsapp)}" placeholder="https://chat.whatsapp.com/..."></div><div class="btnrow"><button class="btn" id="saveWa">Save WhatsApp link</button>${state.whatsapp?'<button class="btn secondary" id="clearWa">Remove link</button>':''}</div></div>`;document.getElementById('saveWa').onclick=()=>{state.whatsapp=waLink.value.trim();save();renderAll();showOrganizer('whatsapp');alert('WhatsApp information saved.')};if(document.getElementById('clearWa'))document.getElementById('clearWa').onclick=()=>{state.whatsapp='';save();renderAll();showOrganizer('whatsapp')};}
+}
+function showOrganizer(tab){organizerMode=true;document.querySelector('.organizerNav').classList.remove('hidden');document.getElementById('modeBtn').textContent='Traveller mode';navigate('organizer');setTimeout(()=>{const t=[...document.querySelectorAll('.tab')].find(x=>x.dataset.admin===tab);if(t)t.click()},0)}
+function navigate(page){if(page==='messages'){markAlertsRead();renderHome();renderMessages();}document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.page===page));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));updateAlertBadge();window.scrollTo(0,0)}
+document.querySelectorAll('.nav').forEach(n=>n.addEventListener('click',()=>navigate(n.dataset.page)));
+document.getElementById('modeBtn').onclick=()=>{organizerMode=!organizerMode;document.querySelector('.organizerNav').classList.toggle('hidden',!organizerMode);document.getElementById('modeBtn').textContent=organizerMode?'Traveller mode':'Organizer mode';navigate(organizerMode?'organizer':'home')};
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;renderHome();});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;renderHome();});
+
+renderAll();
+</script>
+</body></html>

@@ -1,0 +1,23 @@
+PUGLIA 2026 — PUBLISHING THE APP
+
+Recommended host: Netlify
+
+1. Go to https://app.netlify.com/drop
+2. Sign in to Netlify (recommended so you can manage future updates).
+3. Unzip puglia-travel-app.zip on your computer.
+4. Drag the entire puglia-travel-app folder onto the Netlify Drop page.
+5. Netlify will give you an HTTPS address ending in .netlify.app.
+6. Open that address on your phone and test the app.
+7. Send the same address to the travellers.
+
+IPHONE INSTALL
+Open the app link in Safari, tap Share, then Add to Home Screen.
+
+ANDROID INSTALL
+Open the app link in Chrome. The app may show an Install button; otherwise use the browser menu and choose Install app / Add to Home screen.
+
+FUTURE UPDATES
+When ChatGPT creates a newer version, unzip the new package and drag the updated app folder into the deploy area for the same Netlify project.
+
+IMPORTANT
+Anyone who has the web address can normally open the site. Do not put passwords or other private/sensitive information inside this static app.
