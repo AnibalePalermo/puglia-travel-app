@@ -131,7 +131,10 @@ const isAuthorizedOrganizer=()=>!!currentUser&&organizerUIDs.includes(currentUse
 function save(){
  localStorage.setItem('pugliaTripState',JSON.stringify(state));
  if(firebaseReady&&isAuthorizedOrganizer()){
-   tripDoc.set(JSON.parse(JSON.stringify(state))).catch(err=>{
+   tripDoc.set({
+     payload: JSON.stringify(state),
+     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+   }).catch(err=>{
      console.error(err);
      alert('Saved on this device, but the online update failed. Check the organizer sign-in and internet connection.');
    });
@@ -280,16 +283,38 @@ tripDoc.onSnapshot(async snap=>{
  firebaseReady=true;remoteDocExists=snap.exists;
  if(snap.exists){
    const remote=snap.data();
-   if(remote&&Array.isArray(remote.itinerary)&&Array.isArray(remote.hotels)){state=remote;localStorage.setItem('pugliaTripState',JSON.stringify(state));renderAll();if(organizerMode)renderOrganizer();}
+   try{
+     const parsed=remote&&remote.payload?JSON.parse(remote.payload):null;
+     if(parsed&&Array.isArray(parsed.itinerary)&&Array.isArray(parsed.hotels)){
+       state=parsed;
+       localStorage.setItem('pugliaTripState',JSON.stringify(state));
+       renderAll();
+       if(organizerMode)renderOrganizer();
+     }
+   }catch(e){console.error('Could not read shared trip data',e)}
  }else if(isAuthorizedOrganizer()){
-   try{await tripDoc.set(JSON.parse(JSON.stringify(state)));remoteDocExists=true}catch(e){console.error(e)}
+   try{
+     await tripDoc.set({
+       payload: JSON.stringify(state),
+       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+     });
+     remoteDocExists=true
+   }catch(e){console.error(e)}
  }
 },e=>{firebaseReady=true;console.error(e)});
 
 auth.onAuthStateChanged(async user=>{
  currentUser=user||null;
  if(organizerAccess)document.getElementById('modeBtn').textContent=isAuthorizedOrganizer()?(organizerMode?'Traveller mode':'Organizer mode'):'Organizer sign in';
- if(isAuthorizedOrganizer()&&firebaseReady&&!remoteDocExists){try{await tripDoc.set(JSON.parse(JSON.stringify(state)));remoteDocExists=true}catch(e){console.error(e)}}
+ if(isAuthorizedOrganizer()&&firebaseReady&&!remoteDocExists){
+   try{
+     await tripDoc.set({
+       payload: JSON.stringify(state),
+       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+     });
+     remoteDocExists=true
+   }catch(e){console.error(e)}
+ }
  if(organizerMode)renderOrganizer();
 });
 
