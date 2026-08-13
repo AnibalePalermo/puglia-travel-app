@@ -30,6 +30,7 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 @media(max-width:430px){.app{padding-bottom:92px}.grid2{grid-template-columns:1fr}.top{padding-left:14px;padding-right:14px}.top h1{font-size:20px}.top p{font-size:12px}.mode{font-size:11px;padding:8px 9px;min-height:40px}.content{padding-left:10px;padding-right:10px}.card{padding:13px;border-radius:16px}.schedule{grid-template-columns:1fr 1fr}.bottom{grid-template-columns:repeat(4,1fr)}.nav{font-size:9px;min-height:62px}.nav span{font-size:20px}.btnrow .btn{flex:1 1 auto}.row{gap:8px}.pill{font-size:11px}.section-title{font-size:18px}}
 @media(max-width:350px){.toprow{align-items:flex-start}.top h1{font-size:18px}.top p{font-size:11px}.mode{font-size:10px}.schedule{grid-template-columns:1fr}.nav{font-size:8px}.nav span{font-size:18px}}
 .install-card{background:#eef7f8;border-color:#cfe5e8}.install-card .btn{width:100%;margin-top:10px}
+.organizer-bottom{display:none}.app.organizer-active .traveller-bottom{display:none}.app.organizer-active .organizer-bottom{display:grid;grid-template-columns:repeat(5,1fr)}
 
 </style>
 </head>
@@ -48,11 +49,18 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 <section id="organizer" class="page content"><div class="section-title">Organizer dashboard</div><div id="organizerContent"></div></section>
 </main>
 
-<nav class="bottom" id="bottomNav">
+<nav class="bottom traveller-bottom" id="bottomNav">
   <div class="nav active" data-page="home"><span>⌂</span>Home</div>
   <div class="nav" data-page="itinerary"><span>≡</span>Itinerary</div>
   <div class="nav" data-page="messages" id="alertsNav"><span>◉</span>Alerts</div>
   <div class="nav" id="moreNav" data-page="more"><span>•••</span>More</div>
+</nav>
+<nav class="bottom organizer-bottom" id="organizerBottomNav">
+  <div class="nav active" data-adminnav="schedule"><span>≡</span>Itinerary</div>
+  <div class="nav" data-adminnav="alerts"><span>◉</span>Alerts</div>
+  <div class="nav" data-adminnav="hotels"><span>⌂</span>Hotels</div>
+  <div class="nav" data-adminnav="people"><span>♙</span>Travellers</div>
+  <div class="nav" data-adminnav="whatsapp"><span>✆</span>WhatsApp</div>
 </nav>
 </div>
 <script>
@@ -192,7 +200,7 @@ function renderMore(){
 function renderOrganizer(){
  const el=document.getElementById('organizerContent');
  el.innerHTML=`<div class="tabs"><button class="tab active" data-admin="schedule">Daily schedule</button><button class="tab" data-admin="alerts">Alerts</button><button class="tab" data-admin="hotels">Hotels</button><button class="tab" data-admin="people">Travellers</button><button class="tab" data-admin="whatsapp">WhatsApp</button></div><div id="adminPanel"></div>`;
- el.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{el.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');renderAdminPanel(t.dataset.admin)});renderAdminPanel('schedule')
+ el.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{el.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');renderAdminPanel(t.dataset.admin);setOrganizerNav(t.dataset.admin)});renderAdminPanel('schedule')
 }
 function renderAdminPanel(type){const p=document.getElementById('adminPanel'); if(!p)return;
  if(type==='schedule'){p.innerHTML=`<div class="card admin-card"><div class="label">Edit full itinerary</div><div class="muted">Edit any day below. Sights should be entered one per line. Leave the route link blank to have the app create a Google Maps route automatically from the selected hotel.</div>${state.itinerary.map((d,i)=>`<div class="editday"><div class="row"><div><b>${d[0]} · ${esc(d[1])}</b><div class="tiny">${esc(hotelById(d[2]).name)}</div></div><span class="admin-badge">Edit</span></div><div class="field"><label class="tiny">Destination</label><input data-day="${i}" data-field="1" value="${esc(d[1])}"></div><div class="field"><label class="tiny">Hotel base</label><select data-day="${i}" data-field="2">${state.hotels.map(h=>`<option value="${esc(h.id)}" ${h.id===d[2]?'selected':''}>${esc(h.name)}</option>`).join('')}</select></div><div class="grid2"><div class="field"><label class="tiny">Distance from hotel</label><input data-day="${i}" data-field="3" value="${esc(d[3])}" placeholder="e.g. 80 km"></div><div class="field"><label class="tiny">Travel time</label><input data-day="${i}" data-field="4" value="${esc(d[4])}" placeholder="e.g. 1 hr 15 min"></div></div><div class="grid2"><div class="field"><label class="tiny">Morning departure</label><input data-day="${i}" data-field="5" value="${esc(d[5])}"></div><div class="field"><label class="tiny">PM return</label><input data-day="${i}" data-field="6" value="${esc(d[6])}"></div></div><div class="field"><label class="tiny">Things to see — one per line</label><textarea data-day="${i}" data-field="7">${esc((d[7]||[]).join('\n'))}</textarea></div><div class="field"><label class="tiny">Route link (optional)</label><input data-day="${i}" data-field="8" value="${esc(d[8]||'')}" placeholder="https://www.google.com/maps/..."></div></div>`).join('')}<div class="btnrow"><button class="btn" id="saveSchedule">Save itinerary changes</button></div></div>`;document.getElementById('saveSchedule').onclick=()=>{p.querySelectorAll('[data-day]').forEach(inp=>{const d=state.itinerary[+inp.dataset.day],f=+inp.dataset.field;if(f===7)d[f]=inp.value.split(/\n/).map(x=>x.trim()).filter(Boolean);else if(f===8)d[f]=/^https?:\/\//i.test(inp.value.trim())?inp.value.trim():'';else if(f===5||f===6)d[f]=inp.value.trim()||'—';else d[f]=inp.value.trim();});save();renderAll();showOrganizer('schedule');alert('Itinerary changes saved.')};}
@@ -201,12 +209,35 @@ function renderAdminPanel(type){const p=document.getElementById('adminPanel'); i
  if(type==='people'){p.innerHTML=`<div class="card admin-card"><div class="label">Add traveller</div><div class="grid2"><div class="field"><label class="tiny">Name</label><input id="pName" placeholder="Traveller name"></div><div class="field"><label class="tiny">Email (optional)</label><input id="pEmail" placeholder="name@example.com"></div></div><button class="btn" id="addPerson">Add traveller</button></div><div class="card"><div class="label">Current travellers · ${state.travellers.length}</div>${state.travellers.map((t,i)=>`<div class="person"><div><b>${esc(t.name)}</b><div class="tiny">${t.email?esc(t.email):'No email'}</div></div><button class="btn danger small" data-delperson="${i}">Remove</button></div>`).join('')}</div>`;document.getElementById('addPerson').onclick=()=>{const name=pName.value.trim(),email=pEmail.value.trim();if(!name){alert('Add a traveller name.');return}state.travellers.push({name,email});save();renderAll();showOrganizer('people')};p.querySelectorAll('[data-delperson]').forEach(b=>b.onclick=()=>{state.travellers.splice(+b.dataset.delperson,1);save();renderAll();showOrganizer('people')})}
  if(type==='whatsapp'){p.innerHTML=`<div class="card admin-card"><div class="label">WhatsApp group</div><div class="muted">Paste the invitation link for the group. Travellers will then see an Open WhatsApp Group button on Home.</div><div class="field"><label class="tiny">WhatsApp invitation link</label><input id="waLink" value="${esc(state.whatsapp)}" placeholder="https://chat.whatsapp.com/..."></div><div class="btnrow"><button class="btn" id="saveWa">Save WhatsApp link</button>${state.whatsapp?'<button class="btn secondary" id="clearWa">Remove link</button>':''}</div></div>`;document.getElementById('saveWa').onclick=()=>{state.whatsapp=waLink.value.trim();save();renderAll();showOrganizer('whatsapp');alert('WhatsApp information saved.')};if(document.getElementById('clearWa'))document.getElementById('clearWa').onclick=()=>{state.whatsapp='';save();renderAll();showOrganizer('whatsapp')};}
 }
-function showOrganizer(tab){organizerMode=true;document.getElementById('modeBtn').textContent='Traveller mode';navigate('organizer');setTimeout(()=>{const t=[...document.querySelectorAll('.tab')].find(x=>x.dataset.admin===tab);if(t)t.click()},0)}
+function setOrganizerNav(tab){
+ document.querySelectorAll('[data-adminnav]').forEach(x=>x.classList.toggle('active',x.dataset.adminnav===tab));
+}
+function showOrganizer(tab){
+ organizerMode=true;
+ document.querySelector('.app').classList.add('organizer-active');
+ document.getElementById('modeBtn').textContent='Traveller mode';
+ navigate('organizer');
+ setTimeout(()=>{
+   const t=[...document.querySelectorAll('.tab')].find(x=>x.dataset.admin===tab);
+   if(t)t.click(); else renderAdminPanel(tab);
+   setOrganizerNav(tab);
+ },0)
+}
 function navigate(page){if(page==='messages'){markAlertsRead();renderHome();renderMessages();}document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.page===page));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));updateAlertBadge();window.scrollTo(0,0)}
-document.querySelectorAll('.nav').forEach(n=>n.addEventListener('click',()=>navigate(n.dataset.page)));
+document.querySelectorAll('.traveller-bottom .nav').forEach(n=>n.addEventListener('click',()=>navigate(n.dataset.page)));
+document.querySelectorAll('[data-adminnav]').forEach(n=>n.addEventListener('click',()=>showOrganizer(n.dataset.adminnav)));
 if(organizerAccess){
  document.getElementById('modeBtn').classList.remove('hidden');
- document.getElementById('modeBtn').onclick=()=>{organizerMode=!organizerMode;document.getElementById('modeBtn').textContent=organizerMode?'Traveller mode':'Organizer mode';navigate(organizerMode?'organizer':'home')};
+ document.getElementById('modeBtn').onclick=()=>{
+   if(organizerMode){
+     organizerMode=false;
+     document.querySelector('.app').classList.remove('organizer-active');
+     document.getElementById('modeBtn').textContent='Organizer mode';
+     navigate('home');
+   }else{
+     showOrganizer('schedule');
+   }
+ };
 }
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
