@@ -66,7 +66,7 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v13</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v14 · WhatsApp controls</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -105,7 +105,7 @@ const defaultState={
     {id:'south',name:'Messapia Hotel & Resort',subtitle:'Southern Puglia base',address:'Santa Maria di Leuca, Italy'},
     {id:'north',name:'Cristal Palace Hotel',subtitle:'Northern Puglia base',address:'Andria, Italy'}
   ],
-  whatsapp:'',
+  whatsapp:{link:'',buttonLabel:'Open Trip WhatsApp',message:'Use this group for general trip communication and day-to-day coordination.'},
   notifications:[
     {date:'Sept 9',title:'Lecce departure',body:'Tomorrow morning departure is 8:30 AM. Please meet in the lobby by 8:20.'},
     {date:'Sept 8',title:'Welcome to Puglia',body:"Hotel check-in is complete. Tomorrow's destination is Brindisi."}
@@ -157,6 +157,11 @@ let currentUser=null;
 let firebaseReady=false;
 let remoteDocExists=false;
 if(!state.meta)state.meta={name:'Puglia 2026',dates:'September 7–27',year:2026};
+if(typeof state.whatsapp==='string'){
+ state.whatsapp={link:state.whatsapp,buttonLabel:'Open Trip WhatsApp',message:'Use this group for general trip communication and day-to-day coordination.'};
+}
+if(!state.whatsapp)state.whatsapp={link:'',buttonLabel:'Open Trip WhatsApp',message:'Use this group for general trip communication and day-to-day coordination.'};
+
 let lastSyncTime=null;
 let syncError='';
 const isAuthorizedOrganizer=()=>!!currentUser&&organizerUIDs.includes(currentUser.uid);
@@ -297,7 +302,7 @@ function renderHome(){
  ${pick.complete?'':`<div class="schedule"><div class="timebox"><span class="tiny">Morning departure</span><b>${esc(d[5])}</b></div><div class="timebox"><span class="tiny">PM return</span><b>${esc(d[6])}</b></div></div>`}
  ${!pick.complete&&(d[3]||d[8])?`<div class="btnrow"><a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Open route map</a></div>`:''}</div>
  ${secondaryHtml}
- <div class="card whatsapp"><div class="label">Group communication</div><div class="big">WhatsApp group</div><div class="muted">Use WhatsApp for general trip communication. Organizer alerts will still appear here in the app.</div><div class="btnrow">${state.whatsapp?`<a class="btn secondary" target="_blank" href="${esc(state.whatsapp)}">Open WhatsApp group</a>`:`<button class="btn secondary" onclick="alert('The organizer has not added the WhatsApp group link yet.')">WhatsApp info</button>`}</div></div>`;
+ <div class="card whatsapp"><div class="label">Group communication</div><div class="big">WhatsApp</div><div class="muted">${esc(state.whatsapp.message||'Use this group for general trip communication.')}</div><div class="btnrow">${state.whatsapp.link?`<a class="btn secondary" target="_blank" rel="noopener" href="${esc(state.whatsapp.link)}">${esc(state.whatsapp.buttonLabel||'Open Trip WhatsApp')}</a>`:`<button class="btn secondary" onclick="alert('The organizer has not added the WhatsApp group link yet.')">WhatsApp info</button>`}</div></div>`;
 const installBtn=document.getElementById('installAppBtn');if(installBtn)installBtn.onclick=async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;renderHome()};
 }
 function renderItinerary(){
@@ -346,8 +351,8 @@ function renderTravellers(){document.getElementById('travellerSummary').innerHTM
 function renderMore(){
  const el=document.getElementById('moreContent'); if(!el)return;
  const hotelCards=state.hotels.map(h=>`<div class="card hotel"><div class="label">${esc(h.subtitle||'Hotel')}</div><div class="big">${esc(h.name)}</div><div class="muted">${esc(h.address)}</div><div class="btnrow"><a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.address||h.name)}">Open map</a></div></div>`).join('');
- const wa=state.whatsapp
-   ? `<a class="btn" target="_blank" rel="noopener" href="${esc(state.whatsapp)}">Open WhatsApp group</a>`
+ const wa=state.whatsapp.link
+   ? `<a class="btn" target="_blank" rel="noopener" href="${esc(state.whatsapp.link)}">${esc(state.whatsapp.buttonLabel||'Open Trip WhatsApp')}</a>`
    : `<div class="muted">The organizer has not added the WhatsApp group link yet.</div>`;
  const installHelp=isStandalone()
    ? `<div class="muted">Puglia 2026 is installed on this phone.</div>`
@@ -357,7 +362,7 @@ function renderMore(){
  el.innerHTML=`
    <div class="card"><div class="label">Hotel information</div><div class="big">Where we are staying</div><div class="muted">Tap a hotel to open its location in Google Maps.</div></div>
    ${hotelCards}
-   <div class="card whatsapp"><div class="label">Group communication</div><div class="big">WhatsApp</div><div class="muted">Use the group for general trip communication. Important organizer changes will also appear under Alerts.</div><div class="btnrow">${wa}</div></div>
+   <div class="card whatsapp"><div class="label">Group communication</div><div class="big">WhatsApp</div><div class="muted">${esc(state.whatsapp.message||'Use the group for general trip communication.')}</div><div class="btnrow">${wa}</div></div>
    <div class="card"><div class="label">App help</div><div class="big">Using Puglia 2026</div>${installHelp}<div class="muted" style="margin-top:10px">If a schedule changes, check <b>Alerts</b> and the updated itinerary.</div></div>`;
 }
 
@@ -428,7 +433,7 @@ function renderAdminPanel(type){const p=document.getElementById('adminPanel'); i
      const newState={
        meta:{name,dates,year},
        hotels:[{id:'hotel1',name:'Hotel 1',subtitle:'Trip hotel',address:''}],
-       whatsapp:'',
+       whatsapp:{link:'',buttonLabel:'Open Trip WhatsApp',message:'Use this group for general trip communication and day-to-day coordination.'},
        notifications:[],
        travellers:[],
        itinerary:[['Day 1','First destination','hotel1','','','8:30 AM','5:30 PM',[]]]
@@ -506,7 +511,33 @@ document.getElementById('saveSchedule').onclick=async()=>{p.querySelectorAll('[d
    p.querySelectorAll('[data-delhotel]').forEach(b=>b.onclick=async()=>{const i=+b.dataset.delhotel,removed=state.hotels[i];const fallback=state.hotels.find((_,x)=>x!==i);state.itinerary.forEach(d=>{if(d[2]===removed.id)d[2]=fallback.id});state.hotels.splice(i,1);const r=await save();renderAll();showOrganizer('hotels');if(r.shared)alert('Hotel removed. Any affected itinerary days were moved to another hotel base.')});
  }
  if(type==='people'){p.innerHTML=`<div class="card admin-card"><div class="label">Add traveller</div><div class="grid2"><div class="field"><label class="tiny">Name</label><input id="pName" placeholder="Traveller name"></div><div class="field"><label class="tiny">Email (optional)</label><input id="pEmail" placeholder="name@example.com"></div></div><button class="btn" id="addPerson">Add traveller</button></div><div class="card"><div class="label">Current travellers · ${state.travellers.length}</div>${state.travellers.map((t,i)=>`<div class="person"><div><b>${esc(t.name)}</b><div class="tiny">${t.email?esc(t.email):'No email'}</div></div><button class="btn danger small" data-delperson="${i}">Remove</button></div>`).join('')}</div>`;document.getElementById('addPerson').onclick=()=>{const name=pName.value.trim(),email=pEmail.value.trim();if(!name){alert('Add a traveller name.');return}state.travellers.push({name,email});save().then(()=>{renderAll();showOrganizer('people')})};p.querySelectorAll('[data-delperson]').forEach(b=>b.onclick=()=>{state.travellers.splice(+b.dataset.delperson,1);save().then(()=>{renderAll();showOrganizer('people')})})}
- if(type==='whatsapp'){p.innerHTML=`<div class="card admin-card"><div class="label">WhatsApp group</div><div class="muted">Paste the invitation link for the group. Travellers will then see an Open WhatsApp Group button on Home.</div><div class="field"><label class="tiny">WhatsApp invitation link</label><input id="waLink" value="${esc(state.whatsapp)}" placeholder="https://chat.whatsapp.com/..."></div><div class="btnrow"><button class="btn" id="saveWa">Save WhatsApp link</button>${state.whatsapp?'<button class="btn secondary" id="clearWa">Remove link</button>':''}</div></div>`;document.getElementById('saveWa').onclick=()=>{state.whatsapp=waLink.value.trim();save().then(r=>{renderAll();showOrganizer('whatsapp');if(r.shared)alert('WhatsApp information saved online for all travellers.')})};if(document.getElementById('clearWa'))document.getElementById('clearWa').onclick=()=>{state.whatsapp='';save().then(()=>{renderAll();showOrganizer('whatsapp')})};}
+ if(type==='whatsapp'){
+   const wa=state.whatsapp||{link:'',buttonLabel:'Open Trip WhatsApp',message:''};
+   p.innerHTML=`<div class="card admin-card">
+     <div class="label">WhatsApp group</div>
+     <div class="big">Traveller communication</div>
+     <div class="muted">Set the group link and the exact message travellers should see.</div>
+     <div class="field"><label class="tiny">WhatsApp invitation link</label><input id="waLink" value="${esc(wa.link||'')}" placeholder="https://chat.whatsapp.com/..."></div>
+     <div class="field"><label class="tiny">Button label</label><input id="waButtonLabel" value="${esc(wa.buttonLabel||'Open Trip WhatsApp')}" placeholder="Open Trip WhatsApp"></div>
+     <div class="field"><label class="tiny">Traveller message</label><textarea id="waMessage" placeholder="Short instructions for travellers">${esc(wa.message||'')}</textarea></div>
+     <div class="btnrow"><button class="btn" id="saveWa">Save WhatsApp details</button>${wa.link?'<button class="btn secondary" id="clearWa">Remove link</button>':''}</div>
+   </div>`;
+   document.getElementById('saveWa').onclick=async()=>{
+     state.whatsapp={
+       link:waLink.value.trim(),
+       buttonLabel:waButtonLabel.value.trim()||'Open Trip WhatsApp',
+       message:waMessage.value.trim()||'Use this group for general trip communication and day-to-day coordination.'
+     };
+     const r=await save();renderAll();showOrganizer('whatsapp');
+     if(r.shared)alert('WhatsApp details saved online for all travellers.');
+   };
+   const clear=document.getElementById('clearWa');
+   if(clear)clear.onclick=async()=>{
+     state.whatsapp.link='';
+     const r=await save();renderAll();showOrganizer('whatsapp');
+     if(r.shared)alert('WhatsApp link removed.');
+   };
+ }
 }
 function setOrganizerNav(tab){
  document.querySelectorAll('[data-adminnav]').forEach(x=>x.classList.toggle('active',x.dataset.adminnav===tab));
