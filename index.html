@@ -36,11 +36,16 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 .auth-card{border-left:4px solid var(--accent)}
 .auth-status{margin-top:10px;padding:10px 12px;border-radius:12px;background:#f3f7f8;font-size:13px}
 .auth-status.error{background:#fff0ee;color:#8a3028}
+
+.syncbar{font-size:12px;padding:8px 12px;text-align:center;background:#eef7f8;color:#35545d;border-bottom:1px solid var(--line)}
+.syncbar.error{background:#fff0ee;color:#8a3028}
+.syncbar.ok{background:#eaf7ee;color:#2f6a3f}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Puglia 2026</h1><p>September 7–27 · Group trip</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Puglia 2026</h1><p>September 7–27 · Group trip · Sync v10</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
 <section id="home" class="page active content"></section>
@@ -126,25 +131,41 @@ const organizerUIDs=["qqJjUwiF4NRim1AAPuKykpxxhIj2","NsVy4dA8KMV485wQ1yTJd2F6wJq
 let currentUser=null;
 let firebaseReady=false;
 let remoteDocExists=false;
+let lastSyncTime=null;
+let syncError='';
 const isAuthorizedOrganizer=()=>!!currentUser&&organizerUIDs.includes(currentUser.uid);
+
+function setSyncStatus(message,type=''){
+ const el=document.getElementById('syncBar'); if(!el)return;
+ el.textContent=message; el.className='syncbar'+(type?' '+type:'');
+}
+function formatSyncTime(){
+ if(!lastSyncTime)return '';
+ try{return new Date(lastSyncTime).toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'})}catch(e){return ''}
+}
 
 async function save(){
  localStorage.setItem('pugliaTripState',JSON.stringify(state));
  if(!isAuthorizedOrganizer()){
-   return {shared:false, reason:'not-authorized'};
+   setSyncStatus('Organizer is not signed in. Changes are only on this device.','error');
+   return {shared:false,reason:'not-authorized'};
  }
+ setSyncStatus('Saving changes online…');
+ const payload=JSON.stringify(state);
  try{
-   await tripDoc.set({
-     payload: JSON.stringify(state),
-     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-   });
-   remoteDocExists=true;
-   firebaseReady=true;
+   await tripDoc.set({payload,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+   const verified=await tripDoc.get({source:'server'});
+   const remote=verified.data()||{};
+   if(remote.payload!==payload)throw new Error('Server verification did not match the saved trip data.');
+   remoteDocExists=true; firebaseReady=true; lastSyncTime=Date.now();
+   setSyncStatus('Shared trip is up to date · '+formatSyncTime(),'ok');
    return {shared:true};
  }catch(err){
-   console.error('Firestore save failed',err);
-   alert('The change was saved on this device, but could not be shared online. Please check the organizer sign-in and internet connection.');
-   return {shared:false, error:err};
+   console.error('Firestore save/verify failed',err);
+   syncError=err.message||String(err);
+   setSyncStatus('Online save failed. Changes are only on this device.','error');
+   alert('The online save failed, so travellers did not receive this change.');
+   return {shared:false,error:err};
  }
 }
 const alertKey=n=>n?`${n.date||''}|${n.title||''}|${n.body||''}`:'';
@@ -286,8 +307,8 @@ if(organizerAccess){
  document.getElementById('modeBtn').onclick=()=>{if(organizerMode){organizerMode=false;document.querySelector('.app').classList.remove('organizer-active');document.getElementById('modeBtn').textContent=isAuthorizedOrganizer()?'Organizer mode':'Organizer sign in';navigate('home')}else showOrganizer('schedule')};
 }
 
-tripDoc.onSnapshot(async snap=>{
- firebaseReady=true;remoteDocExists=snap.exists;
+tripDoc.onSnapshot({includeMetadataChanges:true},async snap=>{
+ firebaseReady=true; remoteDocExists=snap.exists;
  if(snap.exists){
    const remote=snap.data();
    try{
@@ -297,31 +318,31 @@ tripDoc.onSnapshot(async snap=>{
        localStorage.setItem('pugliaTripState',JSON.stringify(state));
        renderAll();
        if(organizerMode)renderOrganizer();
+       if(!snap.metadata.fromCache&&!snap.metadata.hasPendingWrites){
+         lastSyncTime=Date.now();
+         setSyncStatus('Shared trip is up to date · '+formatSyncTime(),'ok');
+       }else if(snap.metadata.fromCache){
+         setSyncStatus('Showing saved data while reconnecting…');
+       }
      }
-   }catch(e){console.error('Could not read shared trip data',e)}
+   }catch(e){
+     console.error('Could not read shared trip data',e);
+     setSyncStatus('Shared data could not be read.','error');
+   }
  }else if(isAuthorizedOrganizer()){
-   try{
-     await tripDoc.set({
-       payload: JSON.stringify(state),
-       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-     });
-     remoteDocExists=true
-   }catch(e){console.error(e)}
+   await save();
+ }else{
+   setSyncStatus('Waiting for organizer to publish the shared trip…');
  }
-},e=>{firebaseReady=true;console.error(e)});
-
+},e=>{
+ firebaseReady=true; syncError=e.message||String(e);
+ console.error('Firestore listener failed',e);
+ setSyncStatus('Could not connect to shared trip data.','error');
+});
 auth.onAuthStateChanged(async user=>{
  currentUser=user||null;
  if(organizerAccess)document.getElementById('modeBtn').textContent=isAuthorizedOrganizer()?(organizerMode?'Traveller mode':'Organizer mode'):'Organizer sign in';
- if(isAuthorizedOrganizer()&&firebaseReady&&!remoteDocExists){
-   try{
-     await tripDoc.set({
-       payload: JSON.stringify(state),
-       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-     });
-     remoteDocExists=true
-   }catch(e){console.error(e)}
- }
+ if(isAuthorizedOrganizer()&&firebaseReady&&!remoteDocExists){await save();}
  if(organizerMode)renderOrganizer();
 });
 
