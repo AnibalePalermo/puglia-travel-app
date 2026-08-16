@@ -40,11 +40,30 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 .syncbar{font-size:12px;padding:8px 12px;text-align:center;background:#eef7f8;color:#35545d;border-bottom:1px solid var(--line)}
 .syncbar.error{background:#fff0ee;color:#8a3028}
 .syncbar.ok{background:#eaf7ee;color:#2f6a3f}
+
+/* Traveller itinerary visual upgrade */
+.day.visual-day{overflow:hidden;padding:0}
+.day-hero{height:150px;background:linear-gradient(135deg,#157a8a,#63b7c4);background-size:cover;background-position:center;position:relative}
+.day-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,31,38,.66),rgba(10,31,38,.08))}
+.day-hero-text{position:absolute;left:14px;right:14px;bottom:12px;z-index:2;color:#fff}
+.day-hero-text .label{color:rgba(255,255,255,.82)}
+.day-hero-text .day-title{font-size:21px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.day-body{padding:14px}
+.day-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.meta-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;background:#eef6f7;color:#31545d;font-size:12px;font-weight:750}
+.meta-chip.hotel-chip{background:#f0eef8;color:#544b78}
+.meta-chip.time-chip{background:#fff3df;color:#785725}
+.places-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.place-link{display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;color:var(--ink);background:#f7fafb;border:1px solid var(--line);padding:11px 12px;border-radius:12px;font-weight:700}
+.place-link span:last-child{color:var(--accent);font-size:18px}
+.day-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.day-actions .btn{flex:1 1 150px}
+@media(max-width:430px){.day-hero{height:135px}.day-hero-text .day-title{font-size:19px}.day-body{padding:12px}}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Puglia 2026</h1><p>September 7–27 · Group trip · Sync v11 · Easier editing</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Puglia 2026</h1><p>September 7–27 · Group trip · Sync v12 · Visual itinerary</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -188,6 +207,16 @@ const hotelById=id=>state.hotels.find(h=>h.id===id)||state.hotels[0];
 const esc=s=>(s??'').toString().replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 const generatedRoute=(d,h)=>`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(h.address)}&destination=${encodeURIComponent(d[1]+' Italy')}`;
 const routeFor=(d,h)=>/^https?:\/\//i.test((d[8]||'').trim())?d[8].trim():generatedRoute(d,h);
+
+const destinationImages={
+  'Alberobello':'https://www.civitatis.com/f/italia/bari/galeria/alberobello-trulli.jpg',
+  'Monopoli & Polignano a Mare':'https://www.italia.it/content/dam/tdh/en/interests/puglia/polignano-a-mare/media/20220221172343-polignano-a-mare-puglia-gettyimages-1177092596.jpg',
+  'Otranto':'https://www.italia.it/content/dam/tdh/it/interests/puglia/otranto/media/20220223121444-otranto-puglia-gettyimages-1176016495.jpg',
+  'Gallipoli':'https://a0.muscache.com/im/pictures/miso/Hosting-614347901313406464/original/55b04d06-b64e-40af-b5d8-6b6e547cf6c8.jpeg',
+  'Monopoli':'https://st3.idealista.it/news/archivie/styles/amp_1200x675_16_9/public/2026-03/images/monopoli-italyidec052021.jpg_08.jpg?VersionId=CtEFODVnNeAUHASJAveWb4t2bMlX2NRI&itok=dq2H_WsS'
+};
+const photoFor=d=>destinationImages[d[1]]||'';
+const placeMapLink=(place,destination)=>`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place+', '+destination+', Italy')}`;
 function renderAll(){renderHome();renderItinerary();renderMessages();renderMore();renderOrganizer();updateAlertBadge()}
 function itineraryDate(d){
  const m=(d[0]||'').match(/([A-Za-z]+)\s+(\d{1,2})/); if(!m)return null;
@@ -242,7 +271,46 @@ function renderHome(){
  <div class="card whatsapp"><div class="label">Group communication</div><div class="big">WhatsApp group</div><div class="muted">Use WhatsApp for general trip communication. Organizer alerts will still appear here in the app.</div><div class="btnrow">${state.whatsapp?`<a class="btn secondary" target="_blank" href="${esc(state.whatsapp)}">Open WhatsApp group</a>`:`<button class="btn secondary" onclick="alert('The organizer has not added the WhatsApp group link yet.')">WhatsApp info</button>`}</div></div>`;
 const installBtn=document.getElementById('installAppBtn');if(installBtn)installBtn.onclick=async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;renderHome()};
 }
-function renderItinerary(){const days=document.getElementById('days');days.innerHTML='';state.itinerary.forEach((d,i)=>{const h=hotelById(d[2]),div=document.createElement('div');div.className='card day';div.innerHTML=`<div class="day-head"><div><div class="label">${d[0]}</div><div class="day-title">${esc(d[1])}</div>${d[3]||d[4]?`<div class="distance">${esc(d[3])}${d[3]&&d[4]?' · ':''}${esc(d[4])}${(d[3]||d[4])?` from ${esc(h.name)}`:''}</div>`:''}</div><div class="chev">›</div></div><div class="details"><div class="schedule"><div class="timebox"><span class="tiny">Morning departure</span><b>${esc(d[5])}</b></div><div class="timebox"><span class="tiny">PM return</span><b>${esc(d[6])}</b></div></div>${Array.isArray(d[7])&&d[7].length?`<div class="label" style="margin-top:14px">Things to see</div><ul class="list">${d[7].map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}${d[3]||d[8]?`<a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Route from hotel</a>`:''}</div>`;div.addEventListener('click',e=>{if(e.target.tagName!=='A')div.classList.toggle('open')});days.appendChild(div)})}
+function renderItinerary(){
+ const days=document.getElementById('days');days.innerHTML='';
+ state.itinerary.forEach((d,i)=>{
+   const h=hotelById(d[2]),div=document.createElement('div'),photo=photoFor(d);
+   div.className='card day visual-day';
+   const heroStyle=photo?`style="background-image:url('${esc(photo)}')"`:'';
+   const sights=Array.isArray(d[7])&&d[7].length
+     ? `<div class="label" style="margin-top:14px">Places to visit</div>
+        <div class="places-grid">${d[7].map(x=>`<a class="place-link" target="_blank" rel="noopener" href="${esc(placeMapLink(x,d[1]))}"><span>${esc(x)}</span><span>›</span></a>`).join('')}</div>`
+     : '';
+   div.innerHTML=`
+     <div class="day-hero" ${heroStyle}>
+       <div class="day-hero-text">
+         <div class="label">${esc(d[0])}</div>
+         <div class="day-title">${esc(d[1])}</div>
+       </div>
+     </div>
+     <div class="day-body">
+       <div class="day-meta">
+         ${d[5]&&d[5]!=='—'?`<span class="meta-chip time-chip">☀ ${esc(d[5])}</span>`:''}
+         ${d[6]&&d[6]!=='—'?`<span class="meta-chip time-chip">↩ ${esc(d[6])}</span>`:''}
+         <span class="meta-chip hotel-chip">⌂ ${esc(h.name)}</span>
+         ${d[3]?`<span class="meta-chip">${esc(d[3])}</span>`:''}
+         ${d[4]?`<span class="meta-chip">${esc(d[4])}</span>`:''}
+       </div>
+       <div class="details">
+         ${sights}
+         <div class="day-actions">
+           ${(d[3]||d[8])?`<a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Route from hotel</a>`:''}
+           <a class="btn secondary" target="_blank" rel="noopener" href="${esc(placeMapLink(d[1],d[1]))}">Explore destination</a>
+         </div>
+       </div>
+       <div class="btnrow"><button class="btn secondary small itinerary-toggle">Places & map</button></div>
+     </div>`;
+   const toggle=div.querySelector('.itinerary-toggle');
+   toggle.onclick=e=>{e.stopPropagation();div.classList.toggle('open');toggle.textContent=div.classList.contains('open')?'Hide details':'Places & map'};
+   div.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>e.stopPropagation()));
+   days.appendChild(div);
+ });
+}
 function renderMessages(){document.getElementById('messageList').innerHTML=state.notifications.length?state.notifications.map((n,i)=>`<div class="card ${i===0?'notice':''}"><div class="label">Organizer · ${esc(n.date)}</div><div class="big">${esc(n.title)}</div><div class="muted">${esc(n.body)}</div></div>`).join(''):`<div class="card empty">No organizer notifications yet.</div>`}
 function renderTravellers(){document.getElementById('travellerSummary').innerHTML=`<div class="card"><div class="row"><div><div class="big" style="margin:0">${state.travellers.length} travellers</div><div class="muted">Name and optional email only</div></div><span class="pill">Group</span></div></div>`;document.getElementById('travellerList').innerHTML=state.travellers.map(t=>`<div class="person"><div><b>${esc(t.name)}</b><div class="tiny">${t.email?esc(t.email):'email optional / not added'}</div></div></div>`).join('')}
 
