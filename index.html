@@ -427,7 +427,7 @@ function renderAdminPanel(type){const p=document.getElementById('adminPanel'); i
        hotels:[{id:'hotel1',name:'Hotel 1',subtitle:'Trip hotel',address:''}],
             notifications:[],
        travellers:[],
-       itinerary:[['Day 1','First destination','hotel1','','','8:30 AM','5:30 PM',[]]]
+       itinerary:[['Day 1','First destination','hotel1','','','8:30 AM','4:00 PM',[],'']]
      };
      try{
        await db.collection('tripData').doc(key).set({payload:JSON.stringify(newState),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
