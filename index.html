@@ -446,7 +446,7 @@ function renderAdminPanel(type){const p=document.getElementById('adminPanel'); i
 });
 document.getElementById('addItineraryDay').onclick=async()=>{
  const hotelId=(state.hotels[0]&&state.hotels[0].id)||'hotel1';
- state.itinerary.push([`Day ${state.itinerary.length+1}`,'New destination',hotelId,'','','8:30 AM','5:30 PM',[]]);
+ state.itinerary.push([`Day ${state.itinerary.length+1}`,'New destination',hotelId,'','','8:30 AM','5:30 PM',[],'']);
  const r=await save();renderAll();showOrganizer('schedule');
  if(r.shared)alert('New day added. Edit it and save when ready.');
 };
