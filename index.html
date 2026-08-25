@@ -12,15 +12,17 @@
 <link id="app-touch-icon" rel="apple-touch-icon" href="icons/icon-192.png" />
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const trip = params.get("trip");
+(() => {
+  const appParams = new URLSearchParams(window.location.search);
+  const appTrip = appParams.get("trip");
 
-  if (trip === "emiglia-romagna-abruzzo") {
+  if (appTrip === "emiglia-romagna-abruzzo") {
     document.getElementById("app-title-meta").setAttribute("content", "Emilia Romagna-Abruzzo 2027");
     document.getElementById("app-manifest").setAttribute("href", "manifest-abruzzo.json");
     document.getElementById("app-touch-icon").setAttribute("href", "icon-abruzzo-192.png");
     document.title = "Emilia Romagna-Abruzzo 2027";
   }
+})();
 </script>
 <style>
 :root{--bg:#f5f7f8;--card:#fff;--ink:#19323c;--muted:#667780;--accent:#157a8a;--accent2:#e7f3f5;--line:#dfe7ea;--warn:#fff4cf;--danger:#b5473c;--ok:#eaf7ee}
