@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emilia Romagna-Abruzzo 2027</title>
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Abruzzo 2027">
+
+  <link rel="apple-touch-icon" href="icon-abruzzo-192.png">
+  <link rel="manifest" href="manifest-abruzzo.json">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    img {
+      width: 150px;
+      border-radius: 28px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 14px 20px;
+      background: #157a8a;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<img src="icon-abruzzo-192.png" alt="Abruzzo 2027">
+
+<h2>Emilia Romagna-Abruzzo 2027</h2>
+
+<p>Add this page to your Home Screen to create your Abruzzo travel app.</p>
+
+<a href="index.html?trip=emiglia-romagna-abruzzo">
+  Open Travel App
+</a>
+
+<script>
+  const standalone =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  if (standalone) {
+    window.location.replace(
+      "index.html?trip=emiglia-romagna-abruzzo"
+    );
+  }
+</script>
+
+</body>
+</html>
