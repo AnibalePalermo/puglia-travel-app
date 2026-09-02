@@ -301,13 +301,15 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
   background-size:cover !important;
   background-repeat:no-repeat !important;
   background-position:center center !important;
+  width:100%; height:100%; min-height:132px;
 }
+
 
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20.3</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20.4</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -427,7 +429,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20.3`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20.4`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
@@ -492,21 +494,21 @@ const destinationImages={
  'Altamura & Matera':'https://commons.wikimedia.org/wiki/Special:FilePath/Matera%20panorama.jpg?width=1200',
  'Monopoli & Polignano a Mare':'https://commons.wikimedia.org/wiki/Special:FilePath/Polignano-a-Mare.jpg?width=1200',
  'Monopoli and Polignano a Mare':'https://commons.wikimedia.org/wiki/Special:FilePath/Polignano-a-Mare.jpg?width=1200',
- 'Bari':'https://commons.wikimedia.org/wiki/Special:FilePath/Il%20lungomare%20di%20Bari.jpg?width=1200',
+ 'Bari':'https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Bari_-_Lungomare_Nazario_Sauro.jpg/1280px-Bari_-_Lungomare_Nazario_Sauro.jpg',
  'Barletta & Trani':'https://commons.wikimedia.org/wiki/Special:FilePath/Trani%20-%20Cattedrale%20di%20Trani%20-.jpg?width=1200',
  'Barletta and Trani':'https://commons.wikimedia.org/wiki/Special:FilePath/Trani%20-%20Cattedrale%20di%20Trani%20-.jpg?width=1200'
 };
 const hotelPhotoFor=d=>{
  const h=hotelById(d[2]),name=(h&&h.name||'').toLowerCase();
  const label=(d[0]||'').toLowerCase();
- const m=label.match(/sept(?:ember)?\s+(\d{1,2})/);
+ const m=label.match(/sep(?:t(?:ember)?)?\s+(\d{1,2})/);
  const day=m?+m[1]:0;
 
- if(name.includes('messapia')) return 'https://www.gbviaggi.it/app-data/travio/cache/13/img/servizi/messapia_resort_21-79585.jpg';
+ if(name.includes('messapia')) return 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/22/0d/2e/71/messapia-hotel-resort.jpg?h=-1&s=1&w=700';
  if(name.includes('cristal palace')) return 'https://media-cdn.holidaycheck.com/image/fetch/w_768%2Ch_432%2Cc_fill%2Cq_auto%2Cf_auto/https%3A/i.travelapi.com/lodging/3000000/2550000/2541200/2541167/1feb6263.jpg';
 
  if(tripKey==='puglia2026'){
-   if(day && day<=17) return 'https://www.gbviaggi.it/app-data/travio/cache/13/img/servizi/messapia_resort_21-79585.jpg';
+   if(day && day<=17) return 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/22/0d/2e/71/messapia-hotel-resort.jpg?h=-1&s=1&w=700';
    if(day && day>=18) return 'https://media-cdn.holidaycheck.com/image/fetch/w_768%2Ch_432%2Cc_fill%2Cq_auto%2Cf_auto/https%3A/i.travelapi.com/lodging/3000000/2550000/2541200/2541167/1feb6263.jpg';
  }
  return '';
@@ -515,6 +517,7 @@ const photoFor=d=>{
  const raw=(d[1]||'').trim();
  const name=raw.toLowerCase();
  if(name.includes('free day') || name.includes('rest day')) return hotelPhotoFor(d);
+ if(name.includes('naples') || name.includes('airport')) return 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Ingressoaer.jpg';
  if(name.includes('departure') || name.includes('transfer')) return hotelPhotoFor(d);
  if(destinationImages[raw]) return destinationImages[raw];
  if(name.includes('matera')) return destinationImages['Altamura and Matera'];
@@ -633,8 +636,7 @@ function renderItinerary(){
  const ordered=sortedItineraryEntries();
  ordered.forEach(({d})=>{
    const h=hotelById(d[2]),div=document.createElement('div'),photo=photoFor(d),parts=itineraryDateParts(d);
-   if(!photo) div.classList.add('no-photo');
-   div.className='card day visual-day';
+   div.className='card day visual-day'+(!photo?' no-photo':'');
    const photoStyle=`style="background-image:url('${esc(photo)}')"`;
    const badge=parts.day
      ? `<div class="date-badge"><span class="month">${esc(parts.month)}</span><span class="num">${esc(parts.day)}</span></div>`
