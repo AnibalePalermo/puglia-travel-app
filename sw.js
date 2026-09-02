@@ -1,4 +1,4 @@
-const CACHE='travel-app-v20-6';
+const CACHE='travel-app-v20-6-1';
 const STATIC=["./", "./index.html", "./alberobello.jpg", "./altamura.jpg", "./bari.jpg", "./barletta-trani.jpg", "./brindisi.jpg", "./departure.jpg", "./galatina.jpg", "./gallipoli.jpg", "./lecce.jpg", "./locorotondo.jpg", "./maglie.jpg", "./matera.jpg", "./monopoli-polignano.jpg", "./open-flexible.jpg", "./otranto.jpg", "./porto-cesareo.jpg", "./rest-day.jpg", "./transfer.jpg"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(STATIC).catch(()=>{})));self.skipWaiting();});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
