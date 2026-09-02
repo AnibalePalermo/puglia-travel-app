@@ -188,16 +188,113 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
  }
 }
 
+
+/* v20 traveller visual refinements */
+.app:not(.organizer-active) #itinerary .visual-day .itinerary-row{
+  grid-template-columns:76px minmax(0,1fr) 46%;
+  min-height:150px;
+}
+.app:not(.organizer-active) #itinerary .visual-day .itinerary-photo{
+  min-height:150px;
+  background-size:cover;
+  background-position:center;
+}
+.app:not(.organizer-active) #itinerary .visual-day .itinerary-main{
+  padding:14px 10px;
+}
+.app:not(.organizer-active) #itinerary .visual-day .itinerary-title{
+  font-size:18px;
+}
+.trip-segments{
+  margin:2px 0 18px;
+}
+.segment-heading{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+  font-weight:800;
+  margin:0 2px 8px;
+}
+.segment-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.segment-card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:11px 12px;
+  background:#f0f8f1;
+  min-width:0;
+}
+.segment-card.part2{background:#eef5fb}
+.segment-label{
+  display:inline-block;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.05em;
+  color:#fff;
+  background:#2d7549;
+  border-radius:5px;
+  padding:4px 6px;
+  margin-bottom:6px;
+}
+.segment-card.part2 .segment-label{background:#2168a6}
+.segment-dates{
+  font-weight:850;
+  font-size:14px;
+  margin-bottom:4px;
+}
+.segment-hotel{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.25;
+}
+.segment-timeline{
+  position:relative;
+  height:30px;
+  margin:5px 6px 0;
+}
+.segment-line{
+  position:absolute;
+  left:5px;right:5px;top:11px;height:2px;
+  background:linear-gradient(90deg,#2d7549 0 49%,#2168a6 51% 100%);
+}
+.segment-dot{
+  position:absolute;top:6px;width:12px;height:12px;border-radius:50%;
+  background:#2d7549;transform:translateX(-50%);
+}
+.segment-dot.start{left:0;transform:none}
+.segment-dot.change{left:50%;background:#2168a6}
+.segment-dot.end{right:0;left:auto;transform:none;background:#2168a6}
+.segment-caption{
+  display:flex;justify-content:space-between;
+  font-size:10px;color:var(--muted);margin-top:18px;
+}
+@media(max-width:470px){
+  .app:not(.organizer-active) #itinerary .visual-day .itinerary-row{
+    grid-template-columns:68px minmax(0,1fr) 40%;
+    min-height:132px;
+  }
+  .app:not(.organizer-active) #itinerary .visual-day .itinerary-photo{min-height:132px}
+  .app:not(.organizer-active) #itinerary .visual-day .itinerary-title{font-size:16px}
+  .segment-grid{grid-template-columns:1fr 1fr}
+  .segment-card{padding:9px}
+  .segment-dates{font-size:12px}
+  .segment-hotel{font-size:11px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v19.2</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
 <section id="home" class="page active content"></section>
-<section id="itinerary" class="page content"><div class="section-title">Day-by-day itinerary</div><div class="itinerary-note">Dates are automatically shown in chronological order.</div><div id="days"></div></section>
+<section id="itinerary" class="page content"><div id="tripSegments"></div><div class="section-title">Day-by-day itinerary</div><div class="itinerary-note">Dates are automatically shown in chronological order.</div><div id="days"></div></section>
 <section id="messages" class="page content"><div class="section-title">Notifications</div><div id="messageList"></div></section>
 <section id="more" class="page content">
 <div class="section-title">More</div>
@@ -312,7 +409,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v19.2`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
@@ -458,7 +555,37 @@ function renderHome(){
  `;
 const installBtn=document.getElementById('installAppBtn');if(installBtn)installBtn.onclick=async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;renderHome()};
 }
+
+function renderTripSegments(){
+ const el=document.getElementById('tripSegments'); if(!el)return;
+ if(tripKey!=='puglia2026' || !state.hotels || state.hotels.length<2){el.innerHTML='';return;}
+ const h1=state.hotels[0],h2=state.hotels[1];
+ el.innerHTML=`<div class="trip-segments">
+   <div class="segment-heading">Two hotel parts</div>
+   <div class="segment-grid">
+     <div class="segment-card">
+       <div class="segment-label">PART 1</div>
+       <div class="segment-dates">Sept 8 – Sept 17</div>
+       <div class="segment-hotel">⌂ ${esc(h1.name)}</div>
+     </div>
+     <div class="segment-card part2">
+       <div class="segment-label">PART 2</div>
+       <div class="segment-dates">Sept 18 – Sept 27</div>
+       <div class="segment-hotel">⌂ ${esc(h2.name)}</div>
+     </div>
+   </div>
+   <div class="segment-timeline">
+     <div class="segment-line"></div>
+     <span class="segment-dot start"></span>
+     <span class="segment-dot change"></span>
+     <span class="segment-dot end"></span>
+     <div class="segment-caption"><span>Arrive Sept 8</span><span>Hotel change Sept 18</span><span>Sept 27</span></div>
+   </div>
+ </div>`;
+}
+
 function renderItinerary(){
+ renderTripSegments();
  const days=document.getElementById('days');days.innerHTML='';
  const ordered=sortedItineraryEntries();
  ordered.forEach(({d})=>{
