@@ -114,11 +114,53 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 }
 .trip-link{word-break:break-all;background:#f7fafb;border:1px solid var(--line);padding:10px;border-radius:10px;font-size:12px}
 .danger-zone{border-left:4px solid var(--danger)}
+
+/* v19 traveller itinerary: large destination-photo cards */
+body:not(.organizer-mode) #itineraryView .itinerary-row{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);
+  grid-template-areas:
+    "date photo"
+    "main photo"
+    "details photo";
+  gap:0 18px;
+  align-items:center;
+  padding:18px;
+  overflow:hidden;
+}
+body:not(.organizer-mode) #itineraryView .itinerary-date{grid-area:date;}
+body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main;}
+body:not(.organizer-mode) #itineraryView .compact-details{grid-area:details;}
+body:not(.organizer-mode) #itineraryView .itinerary-photo{
+  grid-area:photo;
+  width:100%; height:220px; min-height:220px;
+  object-fit:cover; border-radius:16px;
+  display:block;
+}
+body:not(.organizer-mode) #itineraryView .itinerary-main h3{font-size:1.45rem;margin:4px 0 8px;}
+body:not(.organizer-mode) #itineraryView .date-badge{
+  width:auto; height:auto; min-height:0; background:transparent; color:inherit;
+  padding:0; display:block; text-align:left; box-shadow:none;
+}
+body:not(.organizer-mode) #itineraryView .date-badge .month,
+body:not(.organizer-mode) #itineraryView .date-badge .day{
+  display:inline; font-size:.84rem; font-weight:800; letter-spacing:.04em;
+}
+body:not(.organizer-mode) #itineraryView .date-badge .day{margin-left:5px;}
+@media(max-width:700px){
+ body:not(.organizer-mode) #itineraryView .itinerary-row{
+   grid-template-columns:1fr;
+   grid-template-areas:"date" "main" "photo" "details";
+   gap:10px;
+ }
+ body:not(.organizer-mode) #itineraryView .itinerary-photo{height:210px;min-height:210px;}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v18.1</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v19</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -238,7 +280,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v18.1`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v19`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
