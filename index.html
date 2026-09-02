@@ -8,7 +8,35 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Puglia 2026" />
-<link rel="manifest" href="manifest.json" />
+<script>
+(function(){
+  const launchParams = new URLSearchParams(window.location.search);
+  const launchTrip = (launchParams.get('trip') || 'puglia2026').toLowerCase();
+  const launchOrganizer = launchParams.get('organizer') === '1';
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  let launchTitle = 'Puglia 2026';
+  if (launchTrip === 'emiglia-romagna-abruzzo') {
+    launchTitle = 'Emilia Romagna–Abruzzo 2027';
+  } else if (launchTrip !== 'puglia2026') {
+    launchTitle = launchTrip.replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  document.title = launchOrganizer ? launchTitle + ' Organizer' : launchTitle;
+  const appleTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+  if (appleTitle) appleTitle.setAttribute('content', launchOrganizer ? launchTitle + ' Org' : launchTitle);
+
+  // Android/desktop keep the installable PWA manifest.
+  // iPhone/iPad deliberately use the exact current URL for Home Screen launch.
+  if (!isIOS) {
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = 'manifest.json';
+    document.head.appendChild(manifestLink);
+  }
+})();
+</script>
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <style>
 :root{--bg:#f5f7f8;--card:#fff;--ink:#19323c;--muted:#667780;--accent:#157a8a;--accent2:#e7f3f5;--line:#dfe7ea;--warn:#fff4cf;--danger:#b5473c;--ok:#eaf7ee}
@@ -17,7 +45,7 @@
 .notice{background:var(--warn);border-color:#ead98c}.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}.notice .label{color:#7b6522}.big{font-size:19px;font-weight:750;margin:5px 0}.muted{color:var(--muted);font-size:14px}.row{display:flex;gap:10px;align-items:center;justify-content:space-between}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--accent2);color:var(--accent);font-size:12px;font-weight:700}.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:0;background:var(--accent);color:white;border-radius:10px;padding:10px 12px;font-weight:700;font-size:14px;cursor:pointer}.btn.secondary{background:#edf2f3;color:var(--ink)}.btn.danger{background:var(--danger)}.btn.small{padding:8px 10px;font-size:13px}.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .schedule{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.timebox{background:#f3f7f8;border-radius:12px;padding:10px}.timebox b{display:block;font-size:17px;margin-top:2px}.hotel{border-left:4px solid var(--accent)}
 .day{cursor:pointer}.day .details{display:none;padding-top:12px;border-top:1px solid var(--line);margin-top:12px}.day.open .details{display:block}.day-head{display:flex;justify-content:space-between;gap:12px}.day-title{font-weight:800;font-size:17px}.distance{font-size:13px;color:var(--muted);margin-top:4px}.chev{font-size:21px;color:var(--accent)}
-.list{padding-left:20px;margin:9px 0}.list li{margin:7px 0}.section-title{font-size:20px;font-weight:800;margin:5px 0 12px}.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(620px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid var(--line);z-index:25}.nav{padding:10px 4px 8px;text-align:center;font-size:10px;color:var(--muted);cursor:pointer;position:relative}.alert-badge{position:absolute;top:5px;left:calc(50% + 8px);min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#d93025;color:#fff;font-size:11px;font-weight:900;line-height:18px;text-align:center;box-shadow:0 0 0 2px #fff}.home-alert-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#d93025;color:#fff;font-size:11px;font-weight:900;margin-left:7px;vertical-align:middle}.nav span{display:block;font-size:19px;margin-bottom:2px}.nav.active{color:var(--accent);font-weight:800}.page{display:none}.page.active{display:block}.person{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.person:last-child{border-bottom:0}.whatsapp{background:#eef9f0}.empty{padding:25px;text-align:center;color:var(--muted)}
+.list{padding-left:20px;margin:9px 0}.list li{margin:7px 0}.section-title{font-size:20px;font-weight:800;margin:5px 0 12px}.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(620px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid var(--line);z-index:25}.nav{padding:10px 4px 8px;text-align:center;font-size:10px;color:var(--muted);cursor:pointer;position:relative}.alert-badge{position:absolute;top:5px;left:calc(50% + 8px);min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#d93025;color:#fff;font-size:11px;font-weight:900;line-height:18px;text-align:center;box-shadow:0 0 0 2px #fff}.home-alert-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#d93025;color:#fff;font-size:11px;font-weight:900;margin-left:7px;vertical-align:middle}.nav span{display:block;font-size:19px;margin-bottom:2px}.nav.active{color:var(--accent);font-weight:800}.page{display:none}.page.active{display:block}.person{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.person:last-child{border-bottom:0}.empty{padding:25px;text-align:center;color:var(--muted)}
 input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);font:inherit;margin-top:5px;background:#fff;color:var(--ink)}textarea{min-height:92px;resize:vertical}.tiny{font-size:12px;color:var(--muted)}.field{margin-bottom:11px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.admin-card{border-left:4px solid #556f77}.success{background:var(--ok);border-color:#cfe7d4}.hidden{display:none!important}.editday{padding:12px 0;border-bottom:1px solid var(--line)}.editday:last-child{border-bottom:0}.admin-badge{background:#293e46;color:#fff;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;padding:8px 10px;border-radius:999px;font-weight:700;cursor:pointer}.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* Mobile-app polish */
@@ -41,14 +69,24 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 .syncbar.error{background:#fff0ee;color:#8a3028}
 .syncbar.ok{background:#eaf7ee;color:#2f6a3f}
 
-/* Traveller itinerary visual upgrade */
-.day.visual-day{overflow:hidden;padding:0}
-.day-hero{height:150px;background:linear-gradient(135deg,#157a8a,#63b7c4);background-size:cover;background-position:center;position:relative}
-.day-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,31,38,.66),rgba(10,31,38,.08))}
-.day-hero-text{position:absolute;left:14px;right:14px;bottom:12px;z-index:2;color:#fff}
-.day-hero-text .label{color:rgba(255,255,255,.82)}
-.day-hero-text .day-title{font-size:21px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
-.day-body{padding:14px}
+/* Traveller itinerary: compact chronological photo list */
+.itinerary-note{margin:-4px 0 12px;color:var(--muted);font-size:13px}
+.day.visual-day{overflow:hidden;padding:0;border-radius:16px}
+.itinerary-row{display:grid;grid-template-columns:84px minmax(0,1fr) 34%;min-height:118px;background:#fff}
+.itinerary-date{display:flex;align-items:center;justify-content:center;padding:12px}
+.date-badge{width:62px;min-height:78px;border-radius:13px;background:linear-gradient(180deg,#1e603a,#103c25);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.date-badge .month{font-size:13px;font-weight:850;letter-spacing:.8px}
+.date-badge .num{font-size:34px;line-height:1;font-weight:900;margin-top:2px}
+.date-badge.text-only .num{font-size:14px;line-height:1.2;text-align:center;padding:7px}
+.itinerary-main{padding:15px 12px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.itinerary-title{font-size:19px;font-weight:900;line-height:1.15;color:var(--ink)}
+.itinerary-sub{font-size:13px;color:var(--muted);margin-top:7px;display:flex;gap:8px;flex-wrap:wrap}
+.itinerary-photo{min-height:118px;background:linear-gradient(135deg,#267d8b,#83c0c8);background-size:cover;background-position:center}
+.itinerary-controls{padding:0 12px 12px}
+.itinerary-controls .btn{width:100%}
+.details.compact-details{padding:0 12px 14px}
+.compact-details .day-meta{margin-top:0}
+.compact-details .places-grid{margin-top:10px}
 .day-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .meta-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;background:#eef6f7;color:#31545d;font-size:12px;font-weight:750}
 .meta-chip.hotel-chip{background:#f0eef8;color:#544b78}
@@ -58,20 +96,34 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 .place-link span:last-child{color:var(--accent);font-size:18px}
 .day-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .day-actions .btn{flex:1 1 150px}
-@media(max-width:430px){.day-hero{height:135px}.day-hero-text .day-title{font-size:19px}.day-body{padding:12px}}
-
+@media(max-width:650px){
+ .itinerary-row{grid-template-columns:72px minmax(0,1fr) 34%;min-height:102px}
+ .itinerary-date{padding:8px}
+ .date-badge{width:55px;min-height:70px}
+ .date-badge .num{font-size:30px}
+ .itinerary-main{padding:12px 8px}
+ .itinerary-title{font-size:16px}
+ .itinerary-sub{font-size:11px}
+ .itinerary-photo{min-height:102px}
+}
+@media(max-width:410px){
+ .itinerary-row{grid-template-columns:66px minmax(0,1fr) 31%}
+ .date-badge{width:50px;min-height:65px}
+ .date-badge .num{font-size:27px}
+ .itinerary-title{font-size:15px}
+}
 .trip-link{word-break:break-all;background:#f7fafb;border:1px solid var(--line);padding:10px;border-radius:10px;font-size:12px}
 .danger-zone{border-left:4px solid var(--danger)}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v15 · No WhatsApp</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v17</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
 <section id="home" class="page active content"></section>
-<section id="itinerary" class="page content"><div class="section-title">Day-by-day itinerary</div><div id="days"></div></section>
+<section id="itinerary" class="page content"><div class="section-title">Day-by-day itinerary</div><div class="itinerary-note">Dates are automatically shown in chronological order.</div><div id="days"></div></section>
 <section id="messages" class="page content"><div class="section-title">Notifications</div><div id="messageList"></div></section>
 <section id="more" class="page content">
 <div class="section-title">More</div>
@@ -186,13 +238,14 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v13`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v17`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
 }
 
 async function save(){
+ sortItineraryInPlace();
  localStorage.setItem('pugliaTripState',JSON.stringify(state));
  if(!isAuthorizedOrganizer()){
    setSyncStatus('Organizer is not signed in. Changes are only on this device.','error');
@@ -242,17 +295,61 @@ const destinationImages={
   'Monopoli & Polignano a Mare':'https://www.italia.it/content/dam/tdh/en/interests/puglia/polignano-a-mare/media/20220221172343-polignano-a-mare-puglia-gettyimages-1177092596.jpg',
   'Otranto':'https://www.italia.it/content/dam/tdh/it/interests/puglia/otranto/media/20220223121444-otranto-puglia-gettyimages-1176016495.jpg',
   'Gallipoli':'https://a0.muscache.com/im/pictures/miso/Hosting-614347901313406464/original/55b04d06-b64e-40af-b5d8-6b6e547cf6c8.jpeg',
-  'Monopoli':'https://st3.idealista.it/news/archivie/styles/amp_1200x675_16_9/public/2026-03/images/monopoli-italyidec052021.jpg_08.jpg?VersionId=CtEFODVnNeAUHASJAveWb4t2bMlX2NRI&itok=dq2H_WsS'
+  'Monopoli':'https://st3.idealista.it/news/archivie/styles/amp_1200x675_16_9/public/2026-03/images/monopoli-italyidec052021.jpg_08.jpg?VersionId=CtEFODVnNeAUHASJAveWb4t2bMlX2NRI&itok=dq2H_WsS',
+  'Matera':'https://upload.wikimedia.org/wikipedia/commons/1/1e/Matera_from_Piazzetta_Pascoli-2930.jpg',
+  'Bari':'https://upload.wikimedia.org/wikipedia/commons/5/5d/Bari_seafront.jpg',
+  'Brindisi':'https://upload.wikimedia.org/wikipedia/commons/2/23/Brindisi_-_Lungomare_Regina_Margherita.jpg',
+  'Lecce':'https://upload.wikimedia.org/wikipedia/commons/8/8e/Lecce_-_Piazza_del_Duomo.jpg',
+  'Locorotondo':'https://upload.wikimedia.org/wikipedia/commons/5/51/Locorotondo_panorama.jpg',
+  'Altamura':'https://upload.wikimedia.org/wikipedia/commons/5/5f/Altamura_Cathedral_facade.jpg',
+  'Barletta & Trani':'https://upload.wikimedia.org/wikipedia/commons/3/3d/Trani_Cathedral_2016.jpg',
+  'Porto Cesareo':'https://upload.wikimedia.org/wikipedia/commons/8/8b/Porto_Cesareo_-_panorama.jpg',
+  'Galatina':'https://upload.wikimedia.org/wikipedia/commons/9/9e/Galatina_-_Basilica_di_Santa_Caterina_d%27Alessandria.jpg',
+  'Maglie':'https://upload.wikimedia.org/wikipedia/commons/4/45/Maglie_-_Piazza_Aldo_Moro.jpg'
 };
-const photoFor=d=>destinationImages[d[1]]||'';
+const fallbackImages=[
+ 'https://upload.wikimedia.org/wikipedia/commons/0/03/Polignano_a_Mare_2008.jpg',
+ 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Lecce_-_Piazza_del_Duomo.jpg',
+ 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Matera_from_Piazzetta_Pascoli-2930.jpg'
+];
+const photoFor=d=>{
+ const exact=destinationImages[d[1]];
+ if(exact)return exact;
+ const name=(d[1]||'').toLowerCase();
+ if(name.includes('departure')||name.includes('transfer'))return fallbackImages[0];
+ if(name.includes('rest')||name.includes('open'))return fallbackImages[1];
+ let hash=0; for(const c of name)hash=(hash*31+c.charCodeAt(0))>>>0;
+ return fallbackImages[hash%fallbackImages.length];
+};
 const placeMapLink=(place,destination)=>`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place+', '+destination+', Italy')}`;
-function renderAll(){updateHeader();renderHome();renderItinerary();renderMessages();renderMore();renderOrganizer();updateAlertBadge()}
+function renderAll(){sortItineraryInPlace();updateHeader();renderHome();renderItinerary();renderMessages();renderMore();renderOrganizer();updateAlertBadge()}
 function itineraryDate(d){
  const m=(d[0]||'').match(/([A-Za-z]+)\s+(\d{1,2})/); if(!m)return null;
  const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sept:8,Sep:8,Oct:9,Nov:10,Dec:11};
  const key=m[1].slice(0,4); const month=months[key]??months[m[1].slice(0,3)];
  return month===undefined?null:new Date((state.meta&&+state.meta.year)||2026,month,+m[2]);
 }
+function itinerarySortValue(d,index=0){
+ const dt=itineraryDate(d);
+ if(dt&&!isNaN(dt.getTime()))return {dated:0,time:dt.getTime(),index};
+ // Undated entries stay after dated entries, in their existing order.
+ return {dated:1,time:Number.MAX_SAFE_INTEGER,index};
+}
+function sortedItineraryEntries(){
+ return state.itinerary
+   .map((d,i)=>({d,i,key:itinerarySortValue(d,i)}))
+   .sort((a,b)=>a.key.dated-b.key.dated || a.key.time-b.key.time || a.key.index-b.key.index);
+}
+function sortItineraryInPlace(){
+ state.itinerary = sortedItineraryEntries().map(x=>x.d);
+}
+function itineraryDateParts(d){
+ const dt=itineraryDate(d);
+ if(!dt)return {month:'',day:'',label:(d[0]||'DAY').toUpperCase()};
+ const month=dt.toLocaleString('en-US',{month:'short'}).toUpperCase();
+ return {month,day:String(dt.getDate()),label:d[0]||''};
+}
+
 function homeDayForToday(){
  const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
  const dated=state.itinerary.map((d,i)=>({d,i,date:itineraryDate(d)})).filter(x=>x.date).sort((a,b)=>a.date-b.date);
@@ -302,22 +399,33 @@ const installBtn=document.getElementById('installAppBtn');if(installBtn)installB
 }
 function renderItinerary(){
  const days=document.getElementById('days');days.innerHTML='';
- state.itinerary.forEach((d,i)=>{
-   const h=hotelById(d[2]),div=document.createElement('div'),photo=photoFor(d);
+ const ordered=sortedItineraryEntries();
+ ordered.forEach(({d})=>{
+   const h=hotelById(d[2]),div=document.createElement('div'),photo=photoFor(d),parts=itineraryDateParts(d);
    div.className='card day visual-day';
-   const heroStyle=photo?`style="background-image:url('${esc(photo)}')"`:'';
+   const photoStyle=`style="background-image:url('${esc(photo)}')"`;
+   const badge=parts.day
+     ? `<div class="date-badge"><span class="month">${esc(parts.month)}</span><span class="num">${esc(parts.day)}</span></div>`
+     : `<div class="date-badge text-only"><span class="num">${esc(parts.label)}</span></div>`;
+   const shortMeta=[
+     d[3]?`📍 ${esc(d[3])}`:'',
+     d[4]?esc(d[4]):'',
+     d[5]&&d[5]!=='—'?`Depart ${esc(d[5])}`:''
+   ].filter(Boolean).join(' · ');
    const sights=Array.isArray(d[7])&&d[7].length
-     ? `<div class="label" style="margin-top:14px">Places to visit</div>
+     ? `<div class="label" style="margin-top:12px">Places to visit</div>
         <div class="places-grid">${d[7].map(x=>`<a class="place-link" target="_blank" rel="noopener" href="${esc(placeMapLink(x,d[1]))}"><span>${esc(x)}</span><span>›</span></a>`).join('')}</div>`
      : '';
    div.innerHTML=`
-     <div class="day-hero" ${heroStyle}>
-       <div class="day-hero-text">
-         <div class="label">${esc(d[0])}</div>
-         <div class="day-title">${esc(d[1])}</div>
+     <div class="itinerary-row">
+       <div class="itinerary-date">${badge}</div>
+       <div class="itinerary-main">
+         <div class="itinerary-title">${esc(d[1])}</div>
+         <div class="itinerary-sub"><span>${shortMeta||esc(h.name)}</span></div>
        </div>
+       <div class="itinerary-photo" ${photoStyle}></div>
      </div>
-     <div class="day-body">
+     <div class="details compact-details">
        <div class="day-meta">
          ${d[5]&&d[5]!=='—'?`<span class="meta-chip time-chip">☀ ${esc(d[5])}</span>`:''}
          ${d[6]&&d[6]!=='—'?`<span class="meta-chip time-chip">↩ ${esc(d[6])}</span>`:''}
@@ -325,15 +433,13 @@ function renderItinerary(){
          ${d[3]?`<span class="meta-chip">${esc(d[3])}</span>`:''}
          ${d[4]?`<span class="meta-chip">${esc(d[4])}</span>`:''}
        </div>
-       <div class="details">
-         ${sights}
-         <div class="day-actions">
-           ${(d[3]||d[8])?`<a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Route from hotel</a>`:''}
-           <a class="btn secondary" target="_blank" rel="noopener" href="${esc(placeMapLink(d[1],d[1]))}">Explore destination</a>
-         </div>
+       ${sights}
+       <div class="day-actions">
+         ${(d[3]||d[8])?`<a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Route from hotel</a>`:''}
+         <a class="btn secondary" target="_blank" rel="noopener" href="${esc(placeMapLink(d[1],d[1]))}">Explore destination</a>
        </div>
-       <div class="btnrow"><button class="btn secondary small itinerary-toggle">Places & map</button></div>
-     </div>`;
+     </div>
+     <div class="itinerary-controls"><button class="btn secondary small itinerary-toggle">Places & map</button></div>`;
    const toggle=div.querySelector('.itinerary-toggle');
    toggle.onclick=e=>{e.stopPropagation();div.classList.toggle('open');toggle.textContent=div.classList.contains('open')?'Hide details':'Places & map'};
    div.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>e.stopPropagation()));
@@ -435,7 +541,7 @@ function renderAdminPanel(type){const p=document.getElementById('adminPanel'); i
      }catch(e){console.error(e);alert('Could not create the new trip.')}
    };
  }
- if(type==='schedule'){p.innerHTML=`<div class="card admin-card"><div class="label">Edit full itinerary</div><div class="muted">Edit any day below. Sights should be entered one per line. Leave the route link blank to have the app create a Google Maps route automatically from the selected hotel.</div>${state.itinerary.map((d,i)=>`<div class="editday"><div class="row"><div><b>${d[0]} · ${esc(d[1])}</b><div class="tiny">${esc(hotelById(d[2]).name)}</div></div><span class="admin-badge">Edit</span></div><div class="grid2"><div class="field"><label class="tiny">Date / day label</label><input data-day="${i}" data-field="0" value="${esc(d[0])}"></div><div class="field"><label class="tiny">Destination</label><input data-day="${i}" data-field="1" value="${esc(d[1])}"></div></div><div class="field"><label class="tiny">Hotel base</label><select data-day="${i}" data-field="2">${state.hotels.map(h=>`<option value="${esc(h.id)}" ${h.id===d[2]?'selected':''}>${esc(h.name)}</option>`).join('')}</select></div><div class="grid2"><div class="field"><label class="tiny">Distance from hotel</label><input data-day="${i}" data-field="3" value="${esc(d[3])}" placeholder="e.g. 80 km"></div><div class="field"><label class="tiny">Travel time</label><input data-day="${i}" data-field="4" value="${esc(d[4])}" placeholder="e.g. 1 hr 15 min"></div></div><div class="grid2"><div class="field"><label class="tiny">Morning departure</label><input data-day="${i}" data-field="5" value="${esc(d[5])}"></div><div class="field"><label class="tiny">PM return</label><input data-day="${i}" data-field="6" value="${esc(d[6])}"></div></div><div class="field"><label class="tiny">Things to see — one per line</label><textarea data-day="${i}" data-field="7">${esc((d[7]||[]).join('\n'))}</textarea></div><div class="field"><label class="tiny">Route link (optional)</label><input data-day="${i}" data-field="8" value="${esc(d[8]||'')}" placeholder="https://www.google.com/maps/..."></div>
+ if(type==='schedule'){p.innerHTML=`<div class="card admin-card"><div class="label">Edit full itinerary</div><div class="muted">Days are automatically kept in chronological order. Edit any day below. Sights should be entered one per line. Leave the route link blank to have the app create a Google Maps route automatically from the selected hotel.</div>${state.itinerary.map((d,i)=>`<div class="editday"><div class="row"><div><b>${d[0]} · ${esc(d[1])}</b><div class="tiny">${esc(hotelById(d[2]).name)}</div></div><span class="admin-badge">Edit</span></div><div class="grid2"><div class="field"><label class="tiny">Date / day label</label><input data-day="${i}" data-field="0" value="${esc(d[0])}"></div><div class="field"><label class="tiny">Destination</label><input data-day="${i}" data-field="1" value="${esc(d[1])}"></div></div><div class="field"><label class="tiny">Hotel base</label><select data-day="${i}" data-field="2">${state.hotels.map(h=>`<option value="${esc(h.id)}" ${h.id===d[2]?'selected':''}>${esc(h.name)}</option>`).join('')}</select></div><div class="grid2"><div class="field"><label class="tiny">Distance from hotel</label><input data-day="${i}" data-field="3" value="${esc(d[3])}" placeholder="e.g. 80 km"></div><div class="field"><label class="tiny">Travel time</label><input data-day="${i}" data-field="4" value="${esc(d[4])}" placeholder="e.g. 1 hr 15 min"></div></div><div class="grid2"><div class="field"><label class="tiny">Morning departure</label><input data-day="${i}" data-field="5" value="${esc(d[5])}"></div><div class="field"><label class="tiny">PM return</label><input data-day="${i}" data-field="6" value="${esc(d[6])}"></div></div><div class="field"><label class="tiny">Things to see — one per line</label><textarea data-day="${i}" data-field="7">${esc((d[7]||[]).join('\n'))}</textarea></div><div class="field"><label class="tiny">Route link (optional)</label><input data-day="${i}" data-field="8" value="${esc(d[8]||'')}" placeholder="https://www.google.com/maps/..."></div>
 <div class="btnrow"><button class="btn secondary" data-save-day="${i}">Save this day</button><button class="btn danger" data-delete-day="${i}">Delete day</button></div></div>`).join('')}
 <div class="btnrow"><button class="btn secondary" id="addItineraryDay">Add day</button><button class="btn" id="saveSchedule">Save all itinerary changes</button></div></div>`;p.querySelectorAll('[data-delete-day]').forEach(btn=>btn.onclick=async()=>{
  const i=+btn.dataset.deleteDay;
@@ -459,9 +565,10 @@ p.querySelectorAll('[data-save-day]').forEach(btn=>btn.onclick=async()=>{
    else if(f===5||f===6)d[f]=inp.value.trim()||'—';
    else d[f]=inp.value.trim();
  });
+ const savedLabel=state.itinerary[i][0]+' · '+state.itinerary[i][1];
  const r=await save();
  renderAll();showOrganizer('schedule');
- if(r.shared)alert(state.itinerary[i][0]+' was saved online for all travellers.');
+ if(r.shared)alert(savedLabel+' was saved online for all travellers.');
 });
 document.getElementById('saveSchedule').onclick=async()=>{p.querySelectorAll('[data-day]').forEach(inp=>{const d=state.itinerary[+inp.dataset.day],f=+inp.dataset.field;if(f===7)d[f]=inp.value.split(/\n/).map(x=>x.trim()).filter(Boolean);else if(f===8)d[f]=/^https?:\/\//i.test(inp.value.trim())?inp.value.trim():'';else if(f===5||f===6)d[f]=inp.value.trim()||'—';else d[f]=inp.value.trim();});const r=await save();renderAll();showOrganizer('schedule');if(r.shared)alert('All itinerary changes were saved online for all travellers.')};}
 
@@ -469,7 +576,7 @@ document.getElementById('saveSchedule').onclick=async()=>{p.querySelectorAll('[d
    p.innerHTML=`<div class="card admin-card">
      <div class="label">Bulk schedule editor</div>
      <div class="big">Departure & return times</div>
-     <div class="muted">Change several days at once, then tap Save all times.</div>
+     <div class="muted">Days are shown in chronological order. Change several days at once, then tap Save all times.</div>
      ${state.itinerary.map((d,i)=>`
        <div class="editday">
          <div class="row"><div><b>${esc(d[0])} · ${esc(d[1])}</b><div class="tiny">${esc(hotelById(d[2]).name)}</div></div></div>
