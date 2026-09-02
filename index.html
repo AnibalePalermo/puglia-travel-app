@@ -118,7 +118,7 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v17</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v18</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -238,7 +238,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v17`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v18`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
@@ -291,112 +291,35 @@ const generatedRoute=(d,h)=>`https://www.google.com/maps/dir/?api=1&origin=${enc
 const routeFor=(d,h)=>/^https?:\/\//i.test((d[8]||'').trim())?d[8].trim():generatedRoute(d,h);
 
 const destinationImages={
-  'Alberobello':'https://www.civitatis.com/f/italia/bari/galeria/alberobello-trulli.jpg',
-  'Monopoli & Polignano a Mare':'https://www.italia.it/content/dam/tdh/en/interests/puglia/polignano-a-mare/media/20220221172343-polignano-a-mare-puglia-gettyimages-1177092596.jpg',
-  'Otranto':'https://www.italia.it/content/dam/tdh/it/interests/puglia/otranto/media/20220223121444-otranto-puglia-gettyimages-1176016495.jpg',
-  'Gallipoli':'https://a0.muscache.com/im/pictures/miso/Hosting-614347901313406464/original/55b04d06-b64e-40af-b5d8-6b6e547cf6c8.jpeg',
-  'Monopoli':'https://st3.idealista.it/news/archivie/styles/amp_1200x675_16_9/public/2026-03/images/monopoli-italyidec052021.jpg_08.jpg?VersionId=CtEFODVnNeAUHASJAveWb4t2bMlX2NRI&itok=dq2H_WsS',
-  'Matera':'https://upload.wikimedia.org/wikipedia/commons/1/1e/Matera_from_Piazzetta_Pascoli-2930.jpg',
-  'Bari':'https://upload.wikimedia.org/wikipedia/commons/5/5d/Bari_seafront.jpg',
-  'Brindisi':'https://upload.wikimedia.org/wikipedia/commons/2/23/Brindisi_-_Lungomare_Regina_Margherita.jpg',
-  'Lecce':'https://upload.wikimedia.org/wikipedia/commons/8/8e/Lecce_-_Piazza_del_Duomo.jpg',
-  'Locorotondo':'https://upload.wikimedia.org/wikipedia/commons/5/51/Locorotondo_panorama.jpg',
-  'Altamura':'https://upload.wikimedia.org/wikipedia/commons/5/5f/Altamura_Cathedral_facade.jpg',
-  'Barletta & Trani':'https://upload.wikimedia.org/wikipedia/commons/3/3d/Trani_Cathedral_2016.jpg',
-  'Porto Cesareo':'https://upload.wikimedia.org/wikipedia/commons/8/8b/Porto_Cesareo_-_panorama.jpg',
-  'Galatina':'https://upload.wikimedia.org/wikipedia/commons/9/9e/Galatina_-_Basilica_di_Santa_Caterina_d%27Alessandria.jpg',
-  'Maglie':'https://upload.wikimedia.org/wikipedia/commons/4/45/Maglie_-_Piazza_Aldo_Moro.jpg'
+  'Brindisi':'images/brindisi.jpg',
+  'Lecce':'images/lecce.jpg',
+  'Porto Cesareo':'images/porto-cesareo.jpg',
+  'Gallipoli':'images/gallipoli.jpg',
+  'Galatina':'images/galatina.jpg',
+  'Maglie':'images/maglie.jpg',
+  'Otranto':'images/otranto.jpg',
+  'Locorotondo':'images/locorotondo.jpg',
+  'Alberobello':'images/alberobello.jpg',
+  'Monopoli & Polignano a Mare':'images/monopoli-polignano.jpg',
+  'Matera':'images/matera.jpg',
+  'Bari':'images/bari.jpg',
+  'Altamura':'images/altamura.jpg',
+  'Barletta & Trani':'images/barletta-trani.jpg',
+  'Rest Day':'images/rest-day.jpg',
+  'Open / flexible day':'images/open-flexible.jpg',
+  'Transfer north':'images/transfer.jpg',
+  'Departure for Naples':'images/departure.jpg'
 };
-const fallbackImages=[
- 'https://upload.wikimedia.org/wikipedia/commons/0/03/Polignano_a_Mare_2008.jpg',
- 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Lecce_-_Piazza_del_Duomo.jpg',
- 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Matera_from_Piazzetta_Pascoli-2930.jpg'
-];
 const photoFor=d=>{
- const exact=destinationImages[d[1]];
- if(exact)return exact;
- const name=(d[1]||'').toLowerCase();
- if(name.includes('departure')||name.includes('transfer'))return fallbackImages[0];
- if(name.includes('rest')||name.includes('open'))return fallbackImages[1];
- let hash=0; for(const c of name)hash=(hash*31+c.charCodeAt(0))>>>0;
- return fallbackImages[hash%fallbackImages.length];
+ const name=d[1]||'';
+ if(destinationImages[name])return destinationImages[name];
+ const low=name.toLowerCase();
+ if(low.includes('rest'))return 'images/rest-day.jpg';
+ if(low.includes('open')||low.includes('flexible'))return 'images/open-flexible.jpg';
+ if(low.includes('transfer'))return 'images/transfer.jpg';
+ if(low.includes('departure'))return 'images/departure.jpg';
+ return 'images/porto-cesareo.jpg';
 };
-const placeMapLink=(place,destination)=>`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place+', '+destination+', Italy')}`;
-function renderAll(){sortItineraryInPlace();updateHeader();renderHome();renderItinerary();renderMessages();renderMore();renderOrganizer();updateAlertBadge()}
-function itineraryDate(d){
- const m=(d[0]||'').match(/([A-Za-z]+)\s+(\d{1,2})/); if(!m)return null;
- const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sept:8,Sep:8,Oct:9,Nov:10,Dec:11};
- const key=m[1].slice(0,4); const month=months[key]??months[m[1].slice(0,3)];
- return month===undefined?null:new Date((state.meta&&+state.meta.year)||2026,month,+m[2]);
-}
-function itinerarySortValue(d,index=0){
- const dt=itineraryDate(d);
- if(dt&&!isNaN(dt.getTime()))return {dated:0,time:dt.getTime(),index};
- // Undated entries stay after dated entries, in their existing order.
- return {dated:1,time:Number.MAX_SAFE_INTEGER,index};
-}
-function sortedItineraryEntries(){
- return state.itinerary
-   .map((d,i)=>({d,i,key:itinerarySortValue(d,i)}))
-   .sort((a,b)=>a.key.dated-b.key.dated || a.key.time-b.key.time || a.key.index-b.key.index);
-}
-function sortItineraryInPlace(){
- state.itinerary = sortedItineraryEntries().map(x=>x.d);
-}
-function itineraryDateParts(d){
- const dt=itineraryDate(d);
- if(!dt)return {month:'',day:'',label:(d[0]||'DAY').toUpperCase()};
- const month=dt.toLocaleString('en-US',{month:'short'}).toUpperCase();
- return {month,day:String(dt.getDate()),label:d[0]||''};
-}
-
-function homeDayForToday(){
- const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
- const dated=state.itinerary.map((d,i)=>({d,i,date:itineraryDate(d)})).filter(x=>x.date).sort((a,b)=>a.date-b.date);
- if(!dated.length)return {d:state.itinerary[0],label:'Next up'};
- const first=dated[0],last=dated[dated.length-1];
- const exact=dated.find(x=>x.date.getTime()===today.getTime());
- if(exact)return {d:exact.d,i:exact.i,date:exact.date,label:`Today · ${exact.d[0]}`,today:true};
- if(today<first.date)return {d:first.d,i:first.i,date:first.date,label:`Next up · ${first.d[0]}`,beforeTrip:true};
- if(today>last.date)return {d:last.d,i:last.i,date:last.date,label:'Trip complete',complete:true};
- const next=dated.find(x=>x.date>today);
- return next?{d:next.d,i:next.i,date:next.date,label:`Next up · ${next.d[0]}`}:{d:last.d,i:last.i,date:last.date,label:'Trip complete',complete:true};
-}
-function secondaryHomeDay(pick){
- if(pick.complete)return null;
- const dated=state.itinerary.map((d,i)=>({d,i,date:itineraryDate(d)})).filter(x=>x.date).sort((a,b)=>a.date-b.date);
- if(pick.today){
-   const tomorrow=new Date(pick.date); tomorrow.setDate(tomorrow.getDate()+1);
-   const exactTomorrow=dated.find(x=>x.date.getTime()===tomorrow.getTime());
-   return exactTomorrow?{...exactTomorrow,label:`Tomorrow · ${exactTomorrow.d[0]}`}:null;
- }
- if(pick.beforeTrip){
-   const following=dated.find(x=>x.date>pick.date);
-   return following?{...following,label:`Following day · ${following.d[0]}`}:null;
- }
- return null;
-}
-function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true}
-function installCard(){
-  if(isStandalone()) return '';
-  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  if(deferredInstallPrompt) return `<div class="card install-card"><div class="label">Install app</div><div class="big">Add Puglia 2026 to your phone</div><div class="muted">Install it for a full-screen app experience and quicker access.</div><button class="btn" id="installAppBtn">Install Puglia 2026</button></div>`;
-  if(ios) return `<div class="card install-card"><div class="label">Add to iPhone</div><div class="big">Install Puglia 2026</div><div class="muted">In Safari, tap Share, then choose <b>Add to Home Screen</b>.</div></div>`;
-  return '';
-}
-function renderHome(){
- const pick=homeDayForToday(),d=pick.d,h=hotelById(d[2]),latest=state.notifications[0],secondary=secondaryHomeDay(pick);
- const secondaryHtml=secondary?(()=>{const sd=secondary.d,sh=hotelById(sd[2]);return `<div class="card"><div class="label">${esc(secondary.label)}</div><div class="row"><div><div class="big">${esc(sd[1])}</div><div class="muted">${esc(sh.name)}</div></div><span class="pill">Coming up</span></div><div class="schedule"><div class="timebox"><span class="tiny">Morning departure</span><b>${esc(sd[5])}</b></div><div class="timebox"><span class="tiny">PM return</span><b>${esc(sd[6])}</b></div></div>${sd[3]||sd[8]?`<div class="btnrow"><a class="btn secondary" target="_blank" rel="noopener" href="${esc(routeFor(sd,sh))}">Quick route</a></div>`:''}</div>`})():'';
- document.getElementById('home').innerHTML=installCard()+`
- ${latest?`<div class="card notice"><div class="label">Latest organizer notification${unreadAlertCount()?`<span class="home-alert-badge">${unreadAlertCount()>9?'9+':unreadAlertCount()} new</span>`:''}</div><div class="big">${esc(latest.title)}</div><div class="muted">${esc(latest.body)}</div><div class="btnrow"><button class="btn secondary small" onclick="navigate('messages')">View alerts</button></div></div>`:''}
- <div class="card hotel"><div class="label">${pick.complete?'Final hotel':'Hotel for this day'}</div><div class="big">${esc(h.name)}</div><div class="muted">${esc(h.subtitle)}</div></div>
- <div class="card"><div class="label">${esc(pick.label)}</div><div class="big">${esc(d[1])}</div><div class="muted">${pick.complete?'Your Puglia itinerary has finished.':`${esc(d[3])}${d[4]?` · about ${esc(d[4])} from the hotel`:''}`}</div>
- ${pick.complete?'':`<div class="schedule"><div class="timebox"><span class="tiny">Morning departure</span><b>${esc(d[5])}</b></div><div class="timebox"><span class="tiny">PM return</span><b>${esc(d[6])}</b></div></div>`}
- ${!pick.complete&&(d[3]||d[8])?`<div class="btnrow"><a class="btn" target="_blank" rel="noopener" href="${esc(routeFor(d,h))}">Open route map</a></div>`:''}</div>
- ${secondaryHtml}
- `;
-const installBtn=document.getElementById('installAppBtn');if(installBtn)installBtn.onclick=async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;renderHome()};
-}
 function renderItinerary(){
  const days=document.getElementById('days');days.innerHTML='';
  const ordered=sortedItineraryEntries();
