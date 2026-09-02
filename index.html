@@ -295,16 +295,24 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
 
 .photo-credit{font-size:9px;color:var(--muted);text-align:center;margin:10px 0 4px;opacity:.75}
 
+
+/* v20.3: crop proportionally; never stretch photos */
+.app:not(.organizer-active) #itinerary .visual-day .itinerary-photo{
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+  background-position:center center !important;
+}
+
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20.2</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20.3</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
 <section id="home" class="page active content"></section>
-<section id="itinerary" class="page content"><div id="tripSegments"></div><div class="section-title">Day-by-day itinerary</div><div class="itinerary-note">Dates are automatically shown in chronological order.</div><div id="days"></div><div class="photo-credit">Destination photos: verified Wikimedia Commons sources; hotel-day photos from hotel/travel listings.</div></section>
+<section id="itinerary" class="page content"><div id="tripSegments"></div><div class="section-title">Day-by-day itinerary</div><div class="itinerary-note">Dates are automatically shown in chronological order.</div><div id="days"></div><div class="photo-credit">Destination photos: verified source images; Free/Rest days show the hotel for that trip segment.</div></section>
 <section id="messages" class="page content"><div class="section-title">Notifications</div><div id="messageList"></div></section>
 <section id="more" class="page content">
 <div class="section-title">More</div>
@@ -419,7 +427,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20.2`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20.3`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
@@ -490,8 +498,17 @@ const destinationImages={
 };
 const hotelPhotoFor=d=>{
  const h=hotelById(d[2]),name=(h&&h.name||'').toLowerCase();
+ const label=(d[0]||'').toLowerCase();
+ const m=label.match(/sept(?:ember)?\s+(\d{1,2})/);
+ const day=m?+m[1]:0;
+
  if(name.includes('messapia')) return 'https://www.gbviaggi.it/app-data/travio/cache/13/img/servizi/messapia_resort_21-79585.jpg';
  if(name.includes('cristal palace')) return 'https://media-cdn.holidaycheck.com/image/fetch/w_768%2Ch_432%2Cc_fill%2Cq_auto%2Cf_auto/https%3A/i.travelapi.com/lodging/3000000/2550000/2541200/2541167/1feb6263.jpg';
+
+ if(tripKey==='puglia2026'){
+   if(day && day<=17) return 'https://www.gbviaggi.it/app-data/travio/cache/13/img/servizi/messapia_resort_21-79585.jpg';
+   if(day && day>=18) return 'https://media-cdn.holidaycheck.com/image/fetch/w_768%2Ch_432%2Cc_fill%2Cq_auto%2Cf_auto/https%3A/i.travelapi.com/lodging/3000000/2550000/2541200/2541167/1feb6263.jpg';
+ }
  return '';
 };
 const photoFor=d=>{
