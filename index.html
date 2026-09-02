@@ -285,11 +285,18 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
   .segment-hotel{font-size:11px}
 }
 
+
+/* v20.1 strict photo matching */
+#itinerary .visual-day.no-photo .itinerary-row{
+  grid-template-columns:76px minmax(0,1fr) !important;
+}
+#itinerary .visual-day.no-photo .itinerary-photo{display:none !important;}
+
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20.1</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -409,7 +416,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20.1`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
@@ -462,22 +469,44 @@ const generatedRoute=(d,h)=>`https://www.google.com/maps/dir/?api=1&origin=${enc
 const routeFor=(d,h)=>/^https?:\/\//i.test((d[8]||'').trim())?d[8].trim():generatedRoute(d,h);
 
 const destinationImages={
- 'Brindisi':'brindisi.jpg','Lecce':'lecce.jpg','Porto Cesareo':'porto-cesareo.jpg',
- 'Gallipoli':'gallipoli.jpg','Galatina':'galatina.jpg','Maglie':'maglie.jpg',
- 'Otranto':'otranto.jpg','Locorotondo':'locorotondo.jpg','Alberobello':'alberobello.jpg',
- 'Monopoli & Polignano a Mare':'monopoli-polignano.jpg','Matera':'matera.jpg','Bari':'bari.jpg',
- 'Altamura':'altamura.jpg','Barletta & Trani':'barletta-trani.jpg',
- 'Rest Day':'rest-day.jpg','Open / flexible day':'open-flexible.jpg',
- 'Transfer north':'transfer.jpg','Departure for Naples':'departure.jpg'
+ 'Brindisi':'brindisi.jpg',
+ 'Lecce':'lecce.jpg',
+ 'Porto Cesareo':'porto-cesareo.jpg',
+ 'Gallipoli':'gallipoli.jpg',
+ 'Galatina':'galatina.jpg',
+ 'Maglie':'maglie.jpg',
+ 'Otranto':'otranto.jpg',
+ 'Locorotondo':'locorotondo.jpg',
+ 'Matera':'matera.jpg',
+ 'Altamura':'altamura.jpg',
+ 'Altamura and Matera':'matera.jpg',
+ 'Altamura & Matera':'matera.jpg',
+ 'Monopoli & Polignano a Mare':'monopoli-polignano.jpg',
+ 'Monopoli and Polignano a Mare':'monopoli-polignano.jpg',
+ 'Bari':'bari.jpg',
+ 'Barletta & Trani':'barletta-trani.jpg',
+ 'Barletta and Trani':'barletta-trani.jpg',
+ 'Alberobello':'alberobello.jpg'
 };
-const fallbackImages=['porto-cesareo.jpg','otranto.jpg','alberobello.jpg','matera.jpg'];
 const photoFor=d=>{
- const exact=destinationImages[d[1]]; if(exact)return exact;
- const name=(d[1]||'').toLowerCase();
- if(name.includes('departure')||name.includes('transfer'))return 'transfer.jpg';
- if(name.includes('rest')||name.includes('open'))return 'rest-day.jpg';
- let hash=0; for(const c of name)hash=(hash*31+c.charCodeAt(0))>>>0;
- return fallbackImages[hash%fallbackImages.length];
+ const raw=(d[1]||'').trim();
+ if(destinationImages[raw]) return destinationImages[raw];
+ const name=raw.toLowerCase();
+
+ // Non-sightseeing days get neutral/transfer images instead of a wrong city photo.
+ if(name.includes('free day') || name.includes('rest day') || name==='free day') return 'rest-day.jpg';
+ if(name.includes('departure') || name.includes('transfer') || name.includes('hotel')) return 'transfer.jpg';
+ if(name.includes('open') || name.includes('flexible')) return 'open-flexible.jpg';
+
+ // Handle combined destination labels by keyword.
+ if(name.includes('matera')) return 'matera.jpg';
+ if(name.includes('altamura')) return 'altamura.jpg';
+ if(name.includes('polignano') || name.includes('monopoli')) return 'monopoli-polignano.jpg';
+ if(name.includes('barletta') || name.includes('trani')) return 'barletta-trani.jpg';
+
+ // If there is no verified local photo for the destination, show no image
+ // rather than displaying a misleading picture of another place.
+ return '';
 };
 const placeMapLink=(place,destination)=>`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place+', '+destination+', Italy')}`;
 function renderAll(){sortItineraryInPlace();updateHeader();renderHome();renderItinerary();renderMessages();renderMore();renderOrganizer();updateAlertBadge()}
@@ -590,6 +619,7 @@ function renderItinerary(){
  const ordered=sortedItineraryEntries();
  ordered.forEach(({d})=>{
    const h=hotelById(d[2]),div=document.createElement('div'),photo=photoFor(d),parts=itineraryDateParts(d);
+   if(!photo) div.classList.add('no-photo');
    div.className='card day visual-day';
    const photoStyle=`style="background-image:url('${esc(photo)}')"`;
    const badge=parts.day
