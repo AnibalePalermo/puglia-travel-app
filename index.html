@@ -156,11 +156,43 @@ body:not(.organizer-mode) #itineraryView .date-badge .day{margin-left:5px;}
  body:not(.organizer-mode) #itineraryView .itinerary-photo{height:210px;min-height:210px;}
 }
 
+
+/* v19.1 targeted photo rendering fix */
+body:not(.organizer-mode) #itineraryView .itinerary-row{
+  display:grid !important;
+  grid-template-columns:110px minmax(0,1fr) 300px !important;
+  grid-template-areas:"date main photo" !important;
+  gap:18px !important;
+  align-items:center !important;
+}
+body:not(.organizer-mode) #itineraryView .itinerary-photo{
+  grid-area:photo !important;
+  display:block !important;
+  width:100% !important;
+  height:190px !important;
+  min-height:190px !important;
+  background-size:cover !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+  border-radius:16px !important;
+}
+body:not(.organizer-mode) #itineraryView .itinerary-date{grid-area:date !important;}
+body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !important;}
+@media(max-width:700px){
+ body:not(.organizer-mode) #itineraryView .itinerary-row{
+   grid-template-columns:88px minmax(0,1fr) !important;
+   grid-template-areas:"date main" "photo photo" !important;
+ }
+ body:not(.organizer-mode) #itineraryView .itinerary-photo{
+   height:210px !important; min-height:210px !important; margin-top:10px !important;
+ }
+}
+
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v19</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v19.1</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -280,7 +312,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v19`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v19.1`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
