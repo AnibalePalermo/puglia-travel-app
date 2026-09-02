@@ -192,7 +192,7 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v19.1</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v19.2</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
@@ -312,7 +312,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v19.1`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v19.2`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
@@ -365,20 +365,20 @@ const generatedRoute=(d,h)=>`https://www.google.com/maps/dir/?api=1&origin=${enc
 const routeFor=(d,h)=>/^https?:\/\//i.test((d[8]||'').trim())?d[8].trim():generatedRoute(d,h);
 
 const destinationImages={
- 'Brindisi':'images/brindisi.jpg','Lecce':'images/lecce.jpg','Porto Cesareo':'images/porto-cesareo.jpg',
- 'Gallipoli':'images/gallipoli.jpg','Galatina':'images/galatina.jpg','Maglie':'images/maglie.jpg',
- 'Otranto':'images/otranto.jpg','Locorotondo':'images/locorotondo.jpg','Alberobello':'images/alberobello.jpg',
- 'Monopoli & Polignano a Mare':'images/monopoli-polignano.jpg','Matera':'images/matera.jpg','Bari':'images/bari.jpg',
- 'Altamura':'images/altamura.jpg','Barletta & Trani':'images/barletta-trani.jpg',
- 'Rest Day':'images/rest-day.jpg','Open / flexible day':'images/open-flexible.jpg',
- 'Transfer north':'images/transfer.jpg','Departure for Naples':'images/departure.jpg'
+ 'Brindisi':'brindisi.jpg','Lecce':'lecce.jpg','Porto Cesareo':'porto-cesareo.jpg',
+ 'Gallipoli':'gallipoli.jpg','Galatina':'galatina.jpg','Maglie':'maglie.jpg',
+ 'Otranto':'otranto.jpg','Locorotondo':'locorotondo.jpg','Alberobello':'alberobello.jpg',
+ 'Monopoli & Polignano a Mare':'monopoli-polignano.jpg','Matera':'matera.jpg','Bari':'bari.jpg',
+ 'Altamura':'altamura.jpg','Barletta & Trani':'barletta-trani.jpg',
+ 'Rest Day':'rest-day.jpg','Open / flexible day':'open-flexible.jpg',
+ 'Transfer north':'transfer.jpg','Departure for Naples':'departure.jpg'
 };
-const fallbackImages=['images/porto-cesareo.jpg','images/otranto.jpg','images/alberobello.jpg','images/matera.jpg'];
+const fallbackImages=['porto-cesareo.jpg','otranto.jpg','alberobello.jpg','matera.jpg'];
 const photoFor=d=>{
  const exact=destinationImages[d[1]]; if(exact)return exact;
  const name=(d[1]||'').toLowerCase();
- if(name.includes('departure')||name.includes('transfer'))return 'images/transfer.jpg';
- if(name.includes('rest')||name.includes('open'))return 'images/rest-day.jpg';
+ if(name.includes('departure')||name.includes('transfer'))return 'transfer.jpg';
+ if(name.includes('rest')||name.includes('open'))return 'rest-day.jpg';
  let hash=0; for(const c of name)hash=(hash*31+c.charCodeAt(0))>>>0;
  return fallbackImages[hash%fallbackImages.length];
 };
