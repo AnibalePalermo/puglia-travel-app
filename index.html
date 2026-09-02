@@ -359,12 +359,12 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20.5</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
+<header class="top"><div class="toprow"><div><h1>Travel App</h1><p>Group trip · Sync v20.6</p></div><button id="modeBtn" class="mode hidden">Organizer mode</button></div></header>
 <div id="syncBar" class="syncbar">Connecting to shared trip data…</div>
 
 <main>
 <section id="home" class="page active content"></section>
-<section id="itinerary" class="page content"><div id="tripSegments"></div><div class="section-title">Day-by-day itinerary</div><div class="itinerary-note">Dates are automatically shown in chronological order.</div><div id="days"></div><div class="photo-credit">Destination photos: verified source images; Free/Rest days show the hotel for that trip segment.</div></section>
+<section id="itinerary" class="page content"><div id="tripSegments"></div><div class="section-title">Day-by-day itinerary</div><div class="itinerary-note">Dates are automatically shown in chronological order.</div><div id="days"></div><div class="photo-credit">Photos are stored with the app for reliable viewing on phone and computer.</div></section>
 <section id="messages" class="page content"><div class="section-title">Notifications</div><div id="messageList"></div></section>
 <section id="more" class="page content">
 <div class="section-title">More</div>
@@ -479,7 +479,7 @@ function updateHeader(){
  const h=document.querySelector('.top h1');
  const p=document.querySelector('.top p');
  if(h)h.textContent=meta.name||'Travel App';
- if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20.5`;
+ if(p)p.textContent=`${meta.dates||''}${meta.dates?' · ':''}Group trip · Sync v20.6`;
 }
 function slugifyTripName(name){
  return (name||'trip').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'trip';
@@ -532,21 +532,21 @@ const generatedRoute=(d,h)=>`https://www.google.com/maps/dir/?api=1&origin=${enc
 const routeFor=(d,h)=>/^https?:\/\//i.test((d[8]||'').trim())?d[8].trim():generatedRoute(d,h);
 
 const destinationImages={
- 'Brindisi':'https://commons.wikimedia.org/wiki/Special:FilePath/Porto%20di%20Brindisi.jpg?width=1200',
- 'Lecce':'https://commons.wikimedia.org/wiki/Special:FilePath/Santa%20Croce%20%28Lecce%29%20-%20Fa%C3%A7ade.jpg?width=1200',
- 'Porto Cesareo':'https://commons.wikimedia.org/wiki/Special:FilePath/Porto%20Cesareo.jpg?width=1200',
- 'Gallipoli':'https://commons.wikimedia.org/wiki/Special:FilePath/Panorama%20di%20Gallipoli.jpg?width=1200',
- 'Otranto':'https://commons.wikimedia.org/wiki/Special:FilePath/Panorama%20Baia%20di%20Otranto.jpg?width=1200',
- 'Maglie':'https://commons.wikimedia.org/wiki/Special:FilePath/Piazza%20Aldo%20Moro%2C%20Maglie.jpg?width=1200',
- 'Galatina':'https://commons.wikimedia.org/wiki/Special:FilePath/Basilica%20di%20Santa%20Caterina%20Galatina.jpg?width=1200',
- 'Locorotondo':'https://commons.wikimedia.org/wiki/Special:FilePath/Panorama%20of%20Locorotondo.jpg?width=1200',
- 'Altamura and Matera':'https://commons.wikimedia.org/wiki/Special:FilePath/Matera%20panorama.jpg?width=1200',
- 'Altamura & Matera':'https://commons.wikimedia.org/wiki/Special:FilePath/Matera%20panorama.jpg?width=1200',
- 'Monopoli & Polignano a Mare':'https://commons.wikimedia.org/wiki/Special:FilePath/Polignano-a-Mare.jpg?width=1200',
- 'Monopoli and Polignano a Mare':'https://commons.wikimedia.org/wiki/Special:FilePath/Polignano-a-Mare.jpg?width=1200',
- 'Bari':'https://commons.wikimedia.org/wiki/Special:FilePath/Bari%20-%20Lungomare%20Nazario%20Sauro.jpg?width=1000',
- 'Barletta & Trani':'https://commons.wikimedia.org/wiki/Special:FilePath/Trani%20-%20Cattedrale%20di%20Trani%20-.jpg?width=1200',
- 'Barletta and Trani':'https://commons.wikimedia.org/wiki/Special:FilePath/Trani%20-%20Cattedrale%20di%20Trani%20-.jpg?width=1200'
+ 'Brindisi':'photos/brindisi.jpg',
+ 'Lecce':'photos/lecce.jpg',
+ 'Porto Cesareo':'photos/porto-cesareo.jpg',
+ 'Gallipoli':'photos/gallipoli.jpg',
+ 'Otranto':'photos/otranto.jpg',
+ 'Maglie':'photos/maglie.jpg',
+ 'Galatina':'photos/galatina.jpg',
+ 'Locorotondo':'photos/locorotondo.jpg',
+ 'Altamura and Matera':'photos/matera.jpg',
+ 'Altamura & Matera':'photos/matera.jpg',
+ 'Monopoli & Polignano a Mare':'photos/monopoli-polignano.jpg',
+ 'Monopoli and Polignano a Mare':'photos/monopoli-polignano.jpg',
+ 'Bari':'photos/bari.jpg',
+ 'Barletta & Trani':'photos/barletta-trani.jpg',
+ 'Barletta and Trani':'photos/barletta-trani.jpg'
 };
 const hotelPhotoFor=d=>{
  const h=hotelById(d[2]),name=(h&&h.name||'').toLowerCase();
@@ -554,12 +554,12 @@ const hotelPhotoFor=d=>{
  const m=label.match(/sep(?:t(?:ember)?)?\s+(\d{1,2})/);
  const day=m?+m[1]:0;
 
- if(name.includes('messapia')) return 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/186208820.jpg?k=99c298e64eb54766f30dc7365c0ed4868dda5a68efda47f52cde1d671f2078bd&o=';
- if(name.includes('cristal palace')) return 'https://media-cdn.holidaycheck.com/image/fetch/w_768%2Ch_432%2Cc_fill%2Cq_auto%2Cf_auto/https%3A/i.travelapi.com/lodging/3000000/2550000/2541200/2541167/1feb6263.jpg';
+ if(name.includes('messapia')) return 'photos/messapia-hotel.jpg';
+ if(name.includes('cristal palace')) return 'photos/cristal-palace.jpg';
 
  if(tripKey==='puglia2026'){
-   if(day && day<=17) return 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/186208820.jpg?k=99c298e64eb54766f30dc7365c0ed4868dda5a68efda47f52cde1d671f2078bd&o=';
-   if(day && day>=18) return 'https://media-cdn.holidaycheck.com/image/fetch/w_768%2Ch_432%2Cc_fill%2Cq_auto%2Cf_auto/https%3A/i.travelapi.com/lodging/3000000/2550000/2541200/2541167/1feb6263.jpg';
+   if(day && day<=17) return 'photos/messapia-hotel.jpg';
+   if(day && day>=18) return 'photos/cristal-palace.jpg';
  }
  return '';
 };
@@ -567,18 +567,11 @@ const photoFor=d=>{
  const raw=(d[1]||'').trim();
  const name=raw.toLowerCase();
 
- // Puglia hotel/rest days: always use the hotel for that part of the trip.
  if(name.includes('free day') || name.includes('rest day')) return hotelPhotoFor(d);
-
- // Final travel day: show Naples airport rather than the hotel.
- if(name.includes('naples') || name.includes('airport'))
-   return 'https://commons.wikimedia.org/wiki/Special:FilePath/Ingressoaer.jpg?width=1000';
-
- // Transfer to the northern hotel: show Cristal Palace.
- if(name.includes('departure for cristal') || name.includes('cristal palace'))
-   return 'https://media-cdn.holidaycheck.com/image/fetch/w_768%2Ch_432%2Cc_fill%2Cq_auto%2Cf_auto/https%3A/i.travelapi.com/lodging/3000000/2550000/2541200/2541167/1feb6263.jpg';
-
+ if(name.includes('naples') || name.includes('airport')) return 'photos/naples-airport.jpg';
+ if(name.includes('departure for cristal') || name.includes('cristal palace')) return 'photos/cristal-palace.jpg';
  if(name.includes('departure') || name.includes('transfer')) return hotelPhotoFor(d);
+
  if(destinationImages[raw]) return destinationImages[raw];
  if(name.includes('matera')) return destinationImages['Altamura and Matera'];
  if(name.includes('polignano') || name.includes('monopoli')) return destinationImages['Monopoli & Polignano a Mare'];
