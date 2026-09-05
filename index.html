@@ -32,7 +32,7 @@
   if (!isIOS) {
     const manifestLink = document.createElement('link');
     manifestLink.rel = 'manifest';
-    manifestLink.href = 'manifest.json';
+    manifestLink.href = launchTrip === 'emiglia-romagna-abruzzo' ? 'manifest-abruzzo.json' : 'manifest.json';
     document.head.appendChild(manifestLink);
   }
 })();
@@ -546,7 +546,38 @@ const destinationImages={
  'Monopoli and Polignano a Mare':'monopoli-polignano.jpg',
  'Bari':'bari.jpg',
  'Barletta & Trani':'barletta-trani.jpg',
- 'Barletta and Trani':'barletta-trani.jpg'
+ 'Barletta and Trani':'barletta-trani.jpg','Departure':'departure.jpg',
+'Arrival in Rimini':'arrival-rimini.jpg',
+'Arrival in Rome':'arrival-rimini.jpg',
+'Bologna':'bologna.jpg',
+'Imola - Ravenna':'imola-ravenna.jpg',
+'Imola – Ravenna':'imola-ravenna.jpg',
+'Imola and Ravenna':'imola-ravenna.jpg',
+'Forli - Cesena':'forli-cesena.jpg',
+'Forlì - Cesena':'forli-cesena.jpg',
+'Forlì – Cesena':'forli-cesena.jpg',
+'Forli and Cesena':'forli-cesena.jpg',
+'Pesaro (Marche) - Cattolica':'pesaro-cattolica.jpg',
+'Pesaro (Marche) – Cattolica':'pesaro-cattolica.jpg',
+'Pesaro (Marche) and Cattolica':'pesaro-cattolica.jpg',
+'Cervia - Cesenatico':'cervia-cesenatico.jpg',
+'Cervia – Cesenatico':'cervia-cesenatico.jpg',
+'Cervia and Cesenatico':'cervia-cesenatico.jpg',
+'San Marino':'san-marino.jpg',
+'Urbino (Marche)':'urbino.jpg',
+'Vasto':'vasto.jpg',
+'Lanciano - Ortona':'lanciano-ortona.jpg',
+'Lanciano – Ortona':'lanciano-ortona.jpg',
+'Lanciano and Ortona':'lanciano-ortona.jpg',
+'Sulmona':'sulmona.jpg',
+'Chieti':'chieti.jpg',
+'Pescara':'pescara.jpg',
+'Ascoli Piceno - San Benedetto del Tronto':'ascoli-san-benedetto.jpg',
+'Ascoli Piceno – San Benedetto del Tronto':'ascoli-san-benedetto.jpg',
+'Ascoli Piceno and San Benedetto del Tronto':'ascoli-san-benedetto.jpg',
+'Teramo':'teramo.jpg',
+'Homeward Bound':'fiumicino-airport.jpg',
+'Homeward bound to Fiumicino airport':'fiumicino-airport.jpg'=
 };
 const hotelPhotoFor=d=>{
  const h=hotelById(d[2]),name=(h&&h.name||'').toLowerCase();
