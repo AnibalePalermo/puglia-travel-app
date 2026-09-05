@@ -81,7 +81,7 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
 .itinerary-main{padding:15px 12px;display:flex;flex-direction:column;justify-content:center;min-width:0}
 .itinerary-title{font-size:19px;font-weight:900;line-height:1.15;color:var(--ink)}
 .itinerary-sub{font-size:13px;color:var(--muted);margin-top:7px;display:flex;gap:8px;flex-wrap:wrap}
-.itinerary-photo{min-height:118px;background:linear-gradient(135deg,#267d8b,#83c0c8);background-size:cover;background-position:center}
+.itinerary-photo{aspect-ratio:4/3;min-height:0;background:linear-gradient(135deg,#267d8b,#83c0c8);background-size:cover;background-position:center}
 .itinerary-controls{padding:0 12px 12px}
 .itinerary-controls .btn{width:100%}
 .details.compact-details{padding:0 12px 14px}
@@ -104,8 +104,7 @@ input,select,textarea{font-size:16px;min-height:44px;border-radius:12px;padding:
  .itinerary-main{padding:12px 8px}
  .itinerary-title{font-size:16px}
  .itinerary-sub{font-size:11px}
- .itinerary-photo{min-height:102px}
-}
+.itinerary-photo{aspect-ratio:4/3;min-height:0}
 @media(max-width:410px){
  .itinerary-row{grid-template-columns:66px minmax(0,1fr) 31%}
  .date-badge{width:50px;min-height:65px}
