@@ -157,23 +157,31 @@ body:not(.organizer-mode) #itineraryView .date-badge .day{margin-left:5px;}
 
 
 /* v19.1 targeted photo rendering fix */
-body:not(.organizer-mode) #itineraryView .itinerary-row{
-  display:grid !important;
-  grid-template-columns:110px minmax(0,1fr) 300px !important;
-  grid-template-areas:"date main photo" !important;
-  gap:18px !important;
-  align-items:center !important;
+body:not(.organizer-mode) #itineraryView .itinerary-photo{
+  grid-area:photo !important;
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  aspect-ratio:4/3 !important;
+  background-size:contain !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+  background-color:#eef3f5 !important;
+  border-radius:16px !important;
 }
 body:not(.organizer-mode) #itineraryView .itinerary-photo{
   grid-area:photo !important;
   display:block !important;
   width:100% !important;
-  height:190px !important;
-  min-height:190px !important;
-  background-size:cover !important;
-  background-position:center !important;
-  background-repeat:no-repeat !important;
-  border-radius:16px !important;
+  height:auto !important;
+min-height:0 !important;
+aspect-ratio:4/3 !important;
+background-size:contain !important;
+background-position:center !important;
+background-repeat:no-repeat !important;
+background-color:#eef3f5 !important;
+border-radius:16px !important;
 }
 body:not(.organizer-mode) #itineraryView .itinerary-date{grid-area:date !important;}
 body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !important;}
@@ -181,9 +189,13 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
  body:not(.organizer-mode) #itineraryView .itinerary-row{
    grid-template-columns:88px minmax(0,1fr) !important;
    grid-template-areas:"date main" "photo photo" !important;
- }
- body:not(.organizer-mode) #itineraryView .itinerary-photo{
-   height:210px !important; min-height:210px !important; margin-top:10px !important;
+}
+  body:not(.organizer-mode) #itineraryView .itinerary-photo{
+    height:auto !important;
+    min-height:0 !important;
+    aspect-ratio:4/3 !important;
+    margin-top:10px !important;
+}
  }
 }
 
@@ -194,9 +206,12 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
   min-height:150px;
 }
 .app:not(.organizer-active) #itinerary .visual-day .itinerary-photo{
-  min-height:150px;
-  background-size:cover;
+  min-height:0;
+  aspect-ratio:4/3;
+  background-size:contain;
   background-position:center;
+  background-repeat:no-repeat;
+  background-color:#eef3f5;
 }
 .app:not(.organizer-active) #itinerary .visual-day .itinerary-main{
   padding:14px 10px;
@@ -297,7 +312,7 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
 
 /* v20.3: crop proportionally; never stretch photos */
 .app:not(.organizer-active) #itinerary .visual-day .itinerary-photo{
-  background-size:cover !important;
+  background-size:contain !important;
   background-repeat:no-repeat !important;
   background-position:center center !important;
   width:100%; height:100%; min-height:132px;
@@ -312,8 +327,9 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
   align-items:stretch;
 }
 .app:not(.organizer-active) #itinerary .visual-day .itinerary-photo{
-  min-height:126px !important;
-  height:126px !important;
+ min-height:0 !important;
+height:auto !important;
+  aspect-ratio:4/3 !important;
   overflow:hidden;
   background:none !important;
   border-radius:0 10px 0 0;
@@ -322,7 +338,7 @@ body:not(.organizer-mode) #itineraryView .itinerary-main{grid-area:main !importa
   width:100%;
   height:100%;
   display:block;
-  object-fit:cover;
+  object-fit:contain;
   object-position:center;
 }
 .app:not(.organizer-active) #itinerary .visual-day .itinerary-main{
