@@ -597,7 +597,7 @@ const destinationImages={
 const hotelPhotoFor=d=>{
  const h=hotelById(d[2]),name=(h&&h.name||'').toLowerCase();
  const label=(d[0]||'').toLowerCase();
- const m=label.match(/sep(?:t(?:ember)?)?\s+(\d{1,2})/);
+const m=label.match(/(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})/i);
  const day=m?+m[1]:0;
 
  if(name.includes('messapia')) return 'messapia-hotel.jpg';
@@ -607,7 +607,11 @@ const hotelPhotoFor=d=>{
    if(day && day<=17) return 'messapia-hotel.jpg';
    if(day && day>=18) return 'cristal-palace.jpg';
  }
- return '';
+ if(tripKey==='emiglia-romagna-abruzzo'){
+  if(day && day<=24) return 'free-emilia.jpg';
+  if(day && day>=25) return 'free-abruzzo.jpg';
+}
+  return '';
 };
 const photoFor=d=>{
  const raw=(d[1]||'').trim();
@@ -622,7 +626,13 @@ const photoFor=d=>{
  if(name.includes('matera')) return destinationImages['Altamura and Matera'];
  if(name.includes('polignano') || name.includes('monopoli')) return destinationImages['Monopoli & Polignano a Mare'];
  if(name.includes('barletta') || name.includes('trani')) return destinationImages['Barletta & Trani'];
- return '';
+ if(name.includes('pesaro') && name.includes('cattolica')) return 'pesaro-cattolica.jpg';
+if(name.includes('cervia') && name.includes('cesenatico')) return 'cervia-cesenatico.jpg';
+if(name.includes('urbino') || name.includes('ubino')) return 'urbino.jpg';
+if(name.includes('giulianova')) return 'miramare.jpg';
+if(name.includes('ascoli piceno') && (name.includes('san benedetto') || name.includes('san bernedetto'))) return 'ascoli-san-benedetto.jpg';
+if(name.includes('travel home') || name.includes('homeward')) return 'fiumicino-airport.jpg';
+  return '';
 };
 const placeMapLink=(place,destination)=>`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place+', '+destination+', Italy')}`;
 function renderAll(){sortItineraryInPlace();updateHeader();renderHome();renderItinerary();renderMessages();renderMore();renderOrganizer();updateAlertBadge()}
